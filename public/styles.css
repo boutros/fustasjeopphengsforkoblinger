@@ -1,0 +1,77 @@
+/* normalize */
+html { font-family:serif; -ms-text-size-adjust:100%; -webkit-text-size-adjust:100%;
+	   background: #eee; font-size: 137.5%}
+body { margin:0 auto; max-width: 60rem; background: #fff; color: #333; }
+pre { overflow:auto; font-family:monospace,monospace; font-size:0.8em }
+h1, h2, h3, h4, h5, h6 { margin-top: 1.5rem; margin-bottom: 0; line-height: 1.5rem; font-family:sans-serif;}
+button,input,optgroup,select,textarea { color:inherit; font:inherit; margin:0 }
+button[disabled],html input[disabled] { cursor:default; color: #aaa; }
+input[type="search"] { -webkit-appearance:textfield; box-sizing:content-box }
+input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration { -webkit-appearance:none }
+table { border-collapse:collapse; border-spacing:0 }
+td,th { padding:0 }
+a, a:visited { color: blue; cursor: pointer;}
+p { line-height: 1.5rem; margin-top: 1.5rem; margin-bottom: 0; }
+
+/* grid */
+.row .row { margin:  0 -1.5em; }
+.col      { padding: 0  1.5em; }
+.row:before, .row:after { 
+    content: "";
+    display: table;
+}
+.row:after { clear: both; }
+@media only screen { .col {
+    float: left;
+    width: 100%;
+    box-sizing: border-box;
+}}
+
+/* layout */
+
+.half { width: 50%; }
+
+/* styles */
+h3, h4 { border-bottom: 1px solid #888; }
+p { line-height: 1.5rem; margin-top: 1.5rem; margin-bottom: 0; }
+ul { list-style-type: none }
+ul li { line-height: 1.5rem; margin-bottom: 0.5em; }
+label { font-weight: bold; }
+
+.hidden { display: none }
+.relative { position: relative; }
+.small-caps { font-variant: small-caps; }
+
+.workflow-links li { display: inline-block; float: left; width: 25%; font-size: 1.2em;}
+
+/* icons */
+
+/* WIP */
+table thead { border-bottom: 1px solid #888; }
+table td,
+table th {
+  line-height: 1.5em;
+  text-align: left;
+}
+table td { padding-right: 1em; }
+
+.panel { box-sizing: border-box; border: 4px solid #cde; margin-top: 1em; padding-bottom: 1em;}
+.support-panel { box-sizing: border-box; border: 4px solid #ced; background: #ced;
+	             position: absolute; top:1.4em; right: -30rem; width: 28rem;
+	             max-height: 20rem; overflow-y: auto;}
+
+.caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 2px;
+  vertical-align: middle;
+  border-top: 10px solid #333;
+  border-right: 10px solid transparent;
+  border-left: 10px solid transparent;
+  border-bottom: 0 solid #333;
+  overflow: hidden;
+  transition: 200ms ease;
+}
+
+.caret.open { transform: rotate(-90deg); }
