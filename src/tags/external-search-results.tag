@@ -46,9 +46,9 @@ import './marc-preview.tag'
 	viewMarc(event) {
 		if (tag.marc == event.item.i) {
 			// toggle view off
-			tag.update({marc: undefined})
+			tag.marc = undefined
 		} else {
-			tag.update({marc: event.item.i})
+			tag.marc = event.item.i
 		}
 	}
 
@@ -56,13 +56,13 @@ import './marc-preview.tag'
 		if (tag.selected == event.item.i) {
 			// toggle selection off
 			tag.root.querySelectorAll('input')[tag.selected].checked = false
-			tag.update({selected: undefined})
+			tag.selected = undefined
 			parent.events.trigger('unselected')
 		} else {
 			if (tag.selected) {
 				tag.root.querySelectorAll('input')[tag.selected].checked = false
 			}
-			tag.update({selected: event.item.i})
+			tag.selected = event.item.i
 			tag.root.querySelectorAll('input')[tag.selected].checked = true
 			parent.events.trigger('selected')
 		}
