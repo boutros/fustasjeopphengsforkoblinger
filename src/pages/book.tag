@@ -1,5 +1,6 @@
 import '../tags/external-search.tag'
 import '../tags/tabs.tag'
+import '../tags/main-entry.tag'
 
 <book>
 	<div class="row">
@@ -13,7 +14,33 @@ import '../tags/tabs.tag'
 	</div>
 	<div class="row">
 		<div class="col half panel">
-			<h4>Person (hovedinnførsel)</h4>
+			<h4>Hovedinnførsel</h4>
+			<main-entry></main-entry>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col half panel">
+			<h4>Beskriv utgivelse</h4>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col half panel">
+			<h4>Beskriv verk</h4>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col half panel">
+			<h4>Emner og sjangrer</h4>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col half panel">
+			<h4>Deler</h4>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col half panel">
+			<h4>Biinførsler</h4>
 		</div>
 	</div>
 

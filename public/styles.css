@@ -1,6 +1,7 @@
 /* normalize */
 html { font-family:serif; -ms-text-size-adjust:100%; -webkit-text-size-adjust:100%;
-	   background: #eee; font-size: 137.5%}
+	   background: #eee; font-size: 137.5%; -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale; }
 body { margin:0 auto; max-width: 60rem; background: #fff; color: #333; }
 pre { overflow:auto; font-family:monospace,monospace; font-size:0.8em }
 h1, h2, h3, h4, h5, h6 { margin-top: 1.5rem; margin-bottom: 0; line-height: 1.5rem; font-family:sans-serif;}
@@ -33,14 +34,15 @@ p { line-height: 1.5rem; margin-top: 1.5rem; margin-bottom: 0; }
 
 /* styles */
 h3, h4 { border-bottom: 1px solid #888; }
-p { line-height: 1.5rem; margin-top: 1.5rem; margin-bottom: 0; }
-ul { list-style-type: none }
-ul li { line-height: 1.5rem; margin-bottom: 0.5em; }
+p { line-height: 1.5em; margin-top: 1.5em; margin-bottom: 0; }
+ul { list-style-type: none; padding:0; }
+ul li { line-height: 1.5em; margin-bottom: 0.5em; }
 label { font-weight: bold; }
 
 .hidden { display: none }
 .relative { position: relative; }
 .small-caps { font-variant: small-caps; }
+.clickable { cursor: pointer; }
 
 .workflow-links li { display: inline-block; float: left; width: 25%; font-size: 1.2em;}
 
@@ -74,4 +76,5 @@ table td { padding-right: 1em; }
   transition: 200ms ease;
 }
 
-.caret.open { transform: rotate(-90deg); }
+.caret.open { transform: rotate(-90deg); } /* TODO rename flip or openright */
+.caret.openup { transform: rotate(-180deg); }
