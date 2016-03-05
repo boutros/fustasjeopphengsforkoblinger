@@ -1,20 +1,28 @@
 import './marc-preview.tag'
 
 <external-search-results>
-	<table class="relative">
-		<thead>
-			<tr><th colspan="3">Biblioteksentralen</th></tr>
+	<table class="relative" each={ name, base in opts.results }>
+		<thead if={ base.records || base.searching }>
+			<tr><th colspan="3">{ labelFor(name) }</th></tr>
+			<tr if={ base.searching }>
+				<th colspan="3">
+					<div class="loading"><span>.</span><span>.</span><span>.</span></div>
+				</th>
+			</tr>
 		</thead>
 		<tbody>
-			<tr each={ preview,i in opts.previews } >
-				<td onclick={ set } class="narrow">
-					<input onclick={ set } checked={ i == selected } type="radio" name="searchResult" value={i}/>
+			<tr if={ base.records && base.records.length == 0}>
+				<td colspan="3"><em>Ingen treff</em></td>
+			</tr>
+			<tr each={ preview, i in base.previews } >
+				<td onclick={ select(parent.name) } class="narrow">
+					<input class={ parent.name } onclick={ select(parent.name) } type="radio" name="searchResult" />
 				</td>
-				<td onclick={ set }>{ preview }</td>
-				<td class="narrow" onclick={ viewMarc }>
-					<div class={ caret: true, open: i == marc }></div>
-					<div class={ support-panel: true, hidden: i != marc }>
-						<marc-preview record={ parent.opts.records[i] }></marc-preview>
+				<td onclick={ select(parent.name) }>{ preview }</td>
+				<td class="narrow" onclick={ viewMarc(parent.name) }>
+					<div class={ caret: true, open: i == previewingMarc.i && previewingMarc.base === parent.name }></div>
+					<div class={ support-panel: true, hidden: i != previewingMarc.i || previewingMarc.base !== parent.name }>
+						<marc-preview record={ parent.base.records[i] }></marc-preview>
 					</div>
 				</td>
 			</tr>
@@ -22,7 +30,7 @@ import './marc-preview.tag'
 	</table>
 
 	<style scoped>
-		table { width: 100%; font-size: 90%; }
+		table { width: 100%; font-size: 90%; margin-bottom: 1em;}
 		tbody tr { border-bottom: 1px solid #ddd; cursor: pointer;}
 		td { vertical-align: top; }
 		tbody tr:hover { background: #eee; }
@@ -33,42 +41,73 @@ import './marc-preview.tag'
 	let tag = this
 
 	tag.anySelected = false
-	tag.selected = undefined
-	tag.marc = undefined
+	tag.selected = {
+		base: undefined,
+		i: undefined
+	}
+	tag.previewingMarc = {
+		base: undefined,
+		i: undefined
+	}
 	let parent = tag.parent
 
-	parent.events.on('got-results', function() {
-		// clear any selected item or marc preview
-		tag.selected = undefined
-		tag.marc = undefined
-	})
-
-	viewMarc(event) {
-		if (tag.marc == event.item.i) {
-			// toggle view off
-			tag.marc = undefined
-		} else {
-			tag.marc = event.item.i
+	tag.labelFor = function(name) {
+		switch (name) {
+			case 'bibbi':
+				return "Biblioteksentralen"
+			case 'loc':
+				return "Library Of Congress"
+			default:
+				return "BUG: ukjent kilde"
 		}
 	}
 
-	set(event) {
-		if (tag.selected == event.item.i) {
-			// toggle selection off
-			tag.root.querySelectorAll('input')[tag.selected].checked = false
-			tag.selected = undefined
-			parent.events.trigger('unselected')
-		} else {
-			if (tag.selected) {
-				tag.root.querySelectorAll('input')[tag.selected].checked = false
-			}
-			tag.selected = event.item.i
-			tag.root.querySelectorAll('input')[tag.selected].checked = true
-			parent.events.trigger('selected')
+	parent.events.on('got-results', function() {
+		// clear any selected item or marc preview
+		tag.selected = {
+			base: undefined,
+			i: undefined
 		}
+		tag.previewingMarc = {
+			base: undefined,
+			i: undefined
+		}
+	})
 
-		// e.preventDefault(), since we manually checked/unchecked the radio buttons
-		return false
+	viewMarc(base) {
+		return function(event) {
+			tag.previewingMarc.base = base
+			if (tag.previewingMarc.i == event.item.i) {
+				// toggle view off
+				tag.previewingMarc.i = undefined
+				tag.previewingMarc.base = undefined
+			} else {
+				tag.previewingMarc.i = event.item.i
+			}
+		}
+	}
+
+	select(base) {
+		return function(event) {
+			if ( (tag.selected.base === base) && (tag.selected.i == event.item.i) ) {
+				// toggle selection off
+				tag.root.getElementsByClassName(base)[tag.selected.i].checked = false
+				tag.selected.base = undefined
+				tag.selected.i = undefined
+				parent.events.trigger('unselected')
+			} else {
+				if (tag.selected.i) {
+					tag.root.getElementsByClassName(base)[tag.selected.i].checked = false
+				}
+				tag.selected.base = base
+				tag.selected.i = event.item.i
+				tag.root.getElementsByClassName(base)[tag.selected.i].checked = true
+				parent.events.trigger('selected')
+			}
+
+			// e.preventDefault(), since we manually checked/unchecked the radio buttons
+			return false
+		}
 	}
 
 </external-search-results>

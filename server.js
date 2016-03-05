@@ -94,6 +94,13 @@ app.get('/search/z3950', (req, res) => {
 		})
 	})
 	.catch(function (response) {
+		if (response.status == 404) {
+			res.send({
+				previews: [],
+				marc: []
+			})
+			return
+		}
 		res.send(response)
 	})
 })

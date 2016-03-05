@@ -21,15 +21,12 @@ import './external-search-results.tag'
 	</table>
 
 	<div>
-		<button disabled={ resultSelected } onclick={ search }>Biblioteksentralen</button>
-		<button disabled='true'>Library of Congress</button>
+		<button name="bibbi" disabled={ resultSelected || results.bibbi.searching } onclick={ search }>Biblioteksentralen</button>
+		<button name="loc" disabled={ resultSelected || results.loc.searching } onclick={ search }>Library Of Congress</button>
 		<br/>
 	</div>
 
-	<external-search-results
-		previews={ this.previews }
-		records={ this.records }>
-	</external-search-results>
+	<external-search-results results={ this.results }></external-search-results>
 
 	<style scoped>
 		table { width: 100%; }
@@ -40,17 +37,25 @@ import './external-search-results.tag'
 	const debounceMs = 400
 
 	let tag = this
+	let initialResults = {
+		bibbi: {
+			searching: false,
+			preview: undefined,
+			records: undefined
+		},
+		loc: {
+			searching: false,
+			preview: undefined,
+			records: undefined
+		}
+	}
 
-	tag.previews = []
-	tag.records = []
+	tag.results = initialResults
 
 	// true if any of the search results have been selected
 	tag.resultSelected = false
 
-	// keep track of last executed search to ensure we don't execute
-	// the same query twice.
-	tag.lastSearch = ""
-	
+
 	tag.events = riot.observable()
 	tag.events.on('selected', function() {
 		tag.update({resultSelected: true})
@@ -59,12 +64,12 @@ import './external-search-results.tag'
 		tag.update({resultSelected: false})
 	})
 
-	var debounceSearch = debounce(function(isbn, author, title) {
+	var debounceSearch = debounce(function(base, isbn, author, title) {
 		if (isbn === "" && author === "" && title === "") {
 			return
 		}
 		let params = {
-			base: 'bibbi'
+			base: base
 		}
 		if (author !== "") {
 			params.author = author
@@ -75,18 +80,19 @@ import './external-search-results.tag'
 		if (isbn !== "") {
 			params.isbn = isbn
 		}
-		let nextSearch = isbn+author+title
-		if (nextSearch === tag.lastSearch) {
-			return
-		}
-		tag.lastSearch = nextSearch
+
+		tag.results[base].searching = true
+		tag.results[base].previews = undefined
+		tag.results[base].records = undefined
+		tag.update()
+
 		axios.get('/search/z3950', {params: params})
 		.then(function (response) {
 			tag.events.trigger('got-results')
-			tag.update({
-				previews: response.data.previews,
-				records: response.data.marc
-			})
+			tag.results[base].previews = response.data.previews
+			tag.results[base].records = response.data.marc
+			tag.results[base].searching = false
+			tag.update()
 		})
 		.catch(function (response) {
 			console.log(response)
@@ -94,7 +100,7 @@ import './external-search-results.tag'
 	}, debounceMs)
 
 	search(event) {
-		debounceSearch(tag.isbn.value, tag.author.value, tag.title.value)
+		debounceSearch(event.target.name, tag.isbn.value, tag.author.value, tag.title.value)
 		
 		return true
 	}
