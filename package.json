@@ -9,7 +9,7 @@
     "dev": "npm run start && npm run watch",
     "start": "node server.js",
     "pretest": "rollup -c rollup.config.test.js",
-    "test": "mocha test/test-bundle.js"
+    "test": "ava test/test-bundle.js"
   },
   "dependencies": {
     "axios": "^0.9.1",
@@ -19,9 +19,9 @@
     "xml2js": "^0.4.16"
   },
   "devDependencies": {
+    "ava": "^0.12.0",
     "babel-preset-es2015-rollup": "^1.0.0",
     "chokidar-cli": "^1.2.0",
-    "mocha": "^2.4.5",
     "rollup": "^0.25.4",
     "rollup-plugin-babel": "^2.4.0",
     "rollup-plugin-commonjs": "^2.2.1",
@@ -29,6 +29,16 @@
     "rollup-plugin-node-resolve": "^1.4.0",
     "rollup-plugin-riot": "^0.1.1",
     "xml-flow": "^0.4.0"
+  },
+  "ava": {
+    "files": [
+      "test/*.js"
+    ],
+    "failFast": true,
+    "tap": true,
+    "require": [
+      "babel-register"
+    ]
   },
   "license": "no"
 }

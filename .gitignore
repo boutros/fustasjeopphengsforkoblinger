@@ -1,4 +1,6 @@
 node_modules
 public/bundle.js
 *.log
+*.map
 notes.txt
+test/test-bundle.js
