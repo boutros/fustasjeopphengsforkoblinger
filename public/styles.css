@@ -68,6 +68,9 @@ label { font-weight: bold; }
 
 /* icons */
 
+input.search { background-image: url(data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2213%22%3E%3Cg%20stroke-width%3D%222%22%20stroke%3D%22%236c6c6c%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M11.29%2011.71l-4-4%22%2F%3E%3Ccircle%20cx%3D%225%22%20cy%3D%225%22%20r%3D%224%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E);
+               background-position: 0.252em center; background-repeat: no-repeat; padding-left: 1em; box-sizing: border:box;}
+
 /* WIP */
 table thead { border-bottom: 1px solid #888; }
 table td,

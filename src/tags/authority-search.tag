@@ -1,11 +1,11 @@
 import { debounce} from '../common.js'
 
 <authority-search class="relative" type={ opts.type }>
-	<input oninput={ doSearch } type="search"/>
+	<input class="search" oninput={ doSearch } type="search"/>
 	<div if={ query !== "" } class={ caret: true, open: gotResults }></div>
 
 	<style scoped>
-		input { width: 100%; }
+		input { width: 95%;  }
 		.caret { position: absolute; top: 0.25em; right: 0.25em; }
 	</style>
 

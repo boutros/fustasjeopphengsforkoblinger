@@ -1,6 +1,7 @@
 import '../tags/external-search.tag'
 import '../tags/tabs.tag'
 import '../tags/main-entry.tag'
+import '../tags/literal-input.tag'
 
 <book>
 	<div class="row">
@@ -21,6 +22,23 @@ import '../tags/main-entry.tag'
 	<div class="row">
 		<div class="col half panel">
 			<h4>Beskriv utgivelse</h4>
+			<h5>Tittelopplysninger</h5>
+			<p>
+				<strong>Hovedtittel</strong>
+				<literal-input></literal-input>
+			</p>
+			<p>
+				<strong>Undertittel</strong>
+				<literal-input></literal-input>
+			</p>
+			<p>
+				<strong>Deltittel</strong>
+				<literal-input></literal-input>
+			</p>
+			<p>
+				<strong>Delnummer</strong>
+				<literal-input></literal-input>
+			</p>
 		</div>
 	</div>
 	<div class="row">

@@ -57,7 +57,8 @@ import './external-search-results.tag'
 
 
 	tag.events = riot.observable()
-	tag.events.on('selected', function() {
+	tag.events.on('selected', function(marc) {
+		console.log(marc)
 		tag.update({resultSelected: true})
 	})
 	tag.events.on('unselected', function() {

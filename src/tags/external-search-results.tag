@@ -102,7 +102,7 @@ import './marc-preview.tag'
 				tag.selected.base = base
 				tag.selected.i = event.item.i
 				tag.root.getElementsByClassName(base)[tag.selected.i].checked = true
-				parent.events.trigger('selected')
+				parent.events.trigger('selected', tag.opts.results[base].records[tag.selected.i])
 			}
 
 			// e.preventDefault(), since we manually checked/unchecked the radio buttons
