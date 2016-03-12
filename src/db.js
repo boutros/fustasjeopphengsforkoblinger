@@ -37,10 +37,12 @@ export class DB {
 		})
 		return ok
 	}
+
 	// insert persists a triple in the database.
 	// It returns false if the triple was allready present, otherwise true.
 	insert(triple) {
 		if ( this._graph.insert(triple) ) {
+			// TODO fetch('/services/type', {method: 'patch'})
 			this._broadcast("inserted", triple)
 			return true
 		}
@@ -51,6 +53,7 @@ export class DB {
 	// It returns false if the triple was not stored, otherwise true.
 	delete(triple) {
 		if ( this._graph.delete(triple) ) {
+			// TODO fetch('/services/type', {method: 'patch'})
 			this._broadcast("deleted", triple)
 			return true
 		}

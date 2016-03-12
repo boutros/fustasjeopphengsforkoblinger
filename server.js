@@ -2,7 +2,7 @@
 
 const path = require('path')
 const express = require('express')
-const axios = require('axios')
+const axios = require('axios') // TODO replace with isomorphic-fetch
 const xml2js = require('xml2js')
 
 const app = express()
@@ -18,6 +18,7 @@ function subfield (datafield, code) {
 	return false
 }
 
+// TODO: move to src/marc.js
 function previewsFromCollection(records) {
 	let res = []
 	for (let rec of records) {
@@ -52,6 +53,11 @@ function previewsFromCollection(records) {
 
 app.use(express.static(__dirname + '/public'))
 
+app.all('/services/*', (req, res) => {
+	console.log(req)
+	res.send("simulating services")
+})
+
 app.get('/search/z3950', (req, res) => {
 	// validate params
 	if (!req.query.base) {
@@ -78,6 +84,7 @@ app.get('/search/z3950', (req, res) => {
 	}
 
 	// call z3950 proxy
+	// TODO replace axios with isomorphic-fetch
 	axios.get(z3950proxy, {
 		params: params
 	})
