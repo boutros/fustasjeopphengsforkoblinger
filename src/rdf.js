@@ -1,7 +1,7 @@
 export class Graph {
 	constructor() {
-		this._triples = []
-		this._subscribers = []
+		this._triples = []     // Triple...
+		this._subscribers = [] // {triple: pattern, cb: callback}...
 	}
 
 	equals(other) {
