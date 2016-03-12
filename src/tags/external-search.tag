@@ -1,5 +1,5 @@
 import { debounce } from '../common.js'
-import axios from 'axios'
+import { status, json, queryParams } from '../http-helpers.js'
 
 import './external-search-results.tag'
 
@@ -87,22 +87,24 @@ import './external-search-results.tag'
 		tag.results[base].records = undefined
 		tag.update()
 
-		axios.get('/search/z3950', {params: params})
-		.then(function (response) {
-			tag.events.trigger('got-results')
-			tag.results[base].previews = response.data.previews
-			tag.results[base].records = response.data.marc
-			tag.results[base].searching = false
-			tag.update()
-		})
-		.catch(function (response) {
-			console.log(response)
+		fetch('/search/z3950'+queryParams(params))
+			.then(status)
+			.then(json)
+			.then(function(data) {
+				tag.events.trigger('got-results')
+				tag.results[base].previews = data.previews
+				tag.results[base].records = data.marc
+				tag.results[base].searching = false
+				tag.update()
+			})
+			.catch(function (error) {
+				console.log('request failed', error);
 		})
 	}, debounceMs)
 
 	search(event) {
 		debounceSearch(event.target.name, tag.isbn.value, tag.author.value, tag.title.value)
-		
+
 		return true
 	}
 
