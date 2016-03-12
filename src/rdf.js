@@ -51,10 +51,8 @@ export class Graph {
 	}
 
 	_insert(triple) {
-		for (let hasTr of this._triples) {
-			if (hasTr.equals(triple)) {
-				return
-			}
+		if (this.has(triple)) {
+			return
 		}
 		this._triples.push(triple)
 		this._broadcast("inserted", triple)
@@ -68,7 +66,7 @@ export class Graph {
 		}
 	}
 
-	delete(triple) {
+	delete(triple) { // TODO delete(triple...)
 		let self = this
 		this._triples.forEach(function(hasTr, i, triples) {
 			if (hasTr.equals(triple)) {
