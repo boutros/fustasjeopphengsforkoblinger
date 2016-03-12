@@ -68,6 +68,7 @@ test("subscribing to graph patterns", t => {
 	g.insert(t6)
 	g.delete(t6)
 	g.subscribe(t5, cb)
+	g.subscribe(t5, cb)
 	g.delete(t2)
 	g.insert(t6)
 

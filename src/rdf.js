@@ -17,6 +17,13 @@ export class Graph {
 	}
 
 	subscribe(triple, cb) {
+		for (let i=0; i < this._subscribers.length; i++) {
+			let sub = this._subscribers[i]
+			if (sub.triple.equals(triple) && sub.cb == cb) {
+				// allready subscribed
+				return
+			}
+		}
 		this._subscribers.push({triple, cb})
 	}
 
