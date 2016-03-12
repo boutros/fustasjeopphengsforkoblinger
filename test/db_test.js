@@ -1,10 +1,13 @@
-import { Graph, NamedNode, Literal, Triple, Variable } from '../src/rdf.js'
+import { NamedNode, Literal, Triple, Variable } from '../src/rdf.js'
+import { DB } from '../src/db.js'
+
 import test from 'ava'
 
 let uri = (u) => new NamedNode(u)
 let vari = (v) => new Variable()
 let lit = (v) => new Literal(v)
 
+// TODO move to graph_test.js
 test("triple matching", t => {
 	let tests = [
 		[
@@ -46,10 +49,10 @@ test("triple matching", t => {
 
 
 test("subscribing to graph patterns", t => {
-	let g = new Graph
+	let db = new DB
 	let recievedCalls = []
-	let cb = function(change) {
-		recievedCalls.push(change)
+	let cb = function(transaction) {
+		recievedCalls.push(transaction)
 	}
 
 	let t1 = new Triple(uri("s1"), uri("title"), vari("title"))
@@ -59,18 +62,20 @@ test("subscribing to graph patterns", t => {
 	let t5 = new Triple(uri("s1"), vari("pred"), vari("val"))
 	let t6 = new Triple(uri("s1"), uri("year"), lit("1890"))
 
-	g.subscribe(t1, cb)
-	g.insert(t2)
-	g.insert(t3)
-	g.delete(t3)
-	g.unsubscribe(t1, cb)
-	g.insert(t4)
-	g.insert(t6)
-	g.delete(t6)
-	g.subscribe(t5, cb)
-	g.subscribe(t5, cb)
-	g.delete(t2)
-	g.insert(t6)
+	t.true(db.subscribe(t1, cb))
+	t.true(db.insert(t2))
+	t.false(db.insert(t2))
+	t.true(db.insert(t3))
+	t.true(db.delete(t3))
+	t.false(db.delete(t3))
+	t.true(db.unsubscribe(t1, cb))
+	t.true(db.insert(t4))
+	t.true(db.insert(t6))
+	t.true(db.delete(t6))
+	t.true(db.subscribe(t5, cb))
+	t.false(db.subscribe(t5, cb))
+	t.true(db.delete(t2))
+	t.true(db.insert(t6))
 
 	let want = [
 		{"inserted": t3},

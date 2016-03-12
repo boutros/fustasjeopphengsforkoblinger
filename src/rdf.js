@@ -1,7 +1,6 @@
 export class Graph {
 	constructor() {
-		this._triples = []     // Triple...
-		this._subscribers = [] // {triple: pattern, cb: callback}...
+		this._triples = []
 	}
 
 	equals(other) {
@@ -16,25 +15,6 @@ export class Graph {
 		return true
 	}
 
-	subscribe(triple, cb) {
-		for (let i=0; i < this._subscribers.length; i++) {
-			let sub = this._subscribers[i]
-			if (sub.triple.equals(triple) && sub.cb == cb) {
-				// allready subscribed
-				return
-			}
-		}
-		this._subscribers.push({triple, cb})
-	}
-
-	unsubscribe(triple, cb) {
-		this._subscribers.forEach(function(sub, i, subs) {
-			if (sub.triple.equals(triple) && sub.cb == cb){
-				subs.splice(i, 1)
-			}
-		})
-	}
-
 	has(triple) {
 		for (let t of this._triples) {
 			if ( triple.equals(t) ) {
@@ -44,40 +24,33 @@ export class Graph {
 		return false
 	}
 
-	insert(...triples) {
-		for (let triple of triples) {
-			this._insert(triple)
-		}
+	replaceObj(triple, obj) {
+		// TODO
 	}
 
-	_insert(triple) {
+	insert(triple) { // TODO insert(triple...)
 		if (this.has(triple)) {
-			return
+			return false
 		}
 		this._triples.push(triple)
-		this._broadcast("inserted", triple)
-	}
-
-	_broadcast(op, triple) {
-		for (let s of this._subscribers) {
-			if (s.triple.matches(triple)) {
-				s.cb({[op]: triple})
-			}
-		}
+		return true
 	}
 
 	delete(triple) { // TODO delete(triple...)
-		let self = this
+		let ok = false
 		this._triples.forEach(function(hasTr, i, triples) {
 			if (hasTr.equals(triple)) {
 				triples.splice(i,1)
-				self._broadcast("deleted", triple)
-				return
+				ok = true
 			}
 		})
+		return ok
 	}
 
-	triples()      { return this._triples }
+	triples()      {
+		return this._triples
+	}
+
 	toString()     {
 		let s = ""
 		for (let t of this._triples) {
@@ -186,8 +159,3 @@ export class Triple {
 	}
 }
 
-/*
-
-DB.subscribe(new Triple(subj, pred('mainTitle'), new Variable(?mainTitle)))
-
-*/
