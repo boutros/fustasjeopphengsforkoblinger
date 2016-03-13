@@ -1,12 +1,22 @@
-import { Graph } from './rdf.js'
+import { Graph, Triple } from './rdf.js'
+
+let alwaysOK = function(op, triple) {
+	return true
+}
 
 export class DB {
 
 	// Pubic API:
 
-	constructor() {
+	constructor(remoteSync=alwaysOK) {
 		this._graph = new Graph
 		this._subscribers = [] // {triple: pattern, cb: callback}...
+		this._remoteSync = remoteSync
+	}
+
+	// has checks if the given triple is stored or not. Returns true or false.
+	has(triple) {
+		return this._graph.has(triple)
 	}
 
 	// subscribe will subscribe to the given triple pattern, and calling the
@@ -42,9 +52,20 @@ export class DB {
 	// It returns false if the triple was allready present, otherwise true.
 	insert(triple) {
 		if ( this._graph.insert(triple) ) {
-			// TODO fetch('/services/type', {method: 'patch'})
-			this._broadcast("inserted", triple)
-			return true
+			 this._broadcast("inserted", triple)
+              return true
+
+			/*
+			let op = "inserted"
+			let error
+			try {
+				this._remoteSync(op, triple)
+			} catch(err) {
+				error = err
+			} finally {
+				this._broadcast(op, triple, undefined, error)
+				return true
+			}*/
 		}
 		return false
 	}
@@ -64,17 +85,32 @@ export class DB {
 	// deleting the triple and inserting it again except with
 	// the given object.
 	// It returns false if the triple was not stored, otherwise true.
-	replaceObject(triple, obj) { }
+	replaceObject(triple, obj) {
+		if ( !this._graph.delete(triple) ) {
+			return false
+		}
+
+		// we don't want to mutate callers triple
+		let newTriple = new Triple(triple.s, triple.p, obj)
+
+		if ( !this._graph.insert(newTriple) ) {
+			return false
+		}
+
+		// TODO fetch('/services/type', {method: 'patch'})
+		this._broadcast("replacedObj", newTriple)
+		return true
+	}
 
 
 	// Private methods:
 
 	// broadcast wil broadcast the transaction to any subscribers, in the format:
-	//   [{ op: "inserted"|"deleted", triple: triple }]
+	//   { op: "inserted|deleted|replacedObj", triple: triple }
 	//   If the obj parameter is defined, the message originates from
 	//   replaceObject, and thus two messages will be broadcasted;
 	//   one for the delete statement and one for the insert statement.
-	_broadcast(op, triple, obj) {
+	_broadcast(op, triple, obj, error) {
 		for (let s of this._subscribers) {
 			if (s.triple.matches(triple)) {
 				s.cb({[op]: triple})

@@ -24,10 +24,6 @@ export class Graph {
 		return false
 	}
 
-	replaceObj(triple, obj) {
-		// TODO
-	}
-
 	insert(triple) { // TODO insert(triple...)
 		if (this.has(triple)) {
 			return false
