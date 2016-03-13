@@ -1,16 +1,17 @@
 import { Graph, Triple } from './rdf.js'
 
-let alwaysOK = function(op, triple) {
-	return true
-}
+let noop = function(...transactions) { }
 
 export class DB {
 
 	// Pubic API:
 
-	constructor(remoteSync=alwaysOK) {
+	constructor(remoteSync=noop) {
 		this._graph = new Graph
 		this._subscribers = [] // {triple: pattern, cb: callback}...
+		// remoteSync will be called on each transaction, intended to sync
+		// DB (eg. with server-side). If remoteSync throws an error, the
+		// transaction will fail.
 		this._remoteSync = remoteSync
 	}
 
@@ -50,41 +51,58 @@ export class DB {
 
 	// insert persists a triple in the database.
 	// It returns false if the triple was allready present, otherwise true.
+	// If remoteSync throws an error, the transaction will be rolled back and
+	// the function returns false.
 	insert(triple) {
-		if ( this._graph.insert(triple) ) {
-			 this._broadcast("inserted", triple)
-              return true
-
-			/*
-			let op = "inserted"
-			let error
-			try {
-				this._remoteSync(op, triple)
-			} catch(err) {
-				error = err
-			} finally {
-				this._broadcast(op, triple, undefined, error)
-				return true
-			}*/
+		if ( !this._graph.insert(triple) ) {
+			return false
 		}
-		return false
+		let op = "inserted"
+		let error
+		let ok = true
+		try {
+			this._remoteSync({op, triple})
+		} catch(err) {
+			// Remote sync failed; rollback transaction:
+			this._graph.delete(triple)
+			error = err
+			ok = false
+		} finally {
+			this._broadcast(op, triple, error)
+			return ok
+		}
 	}
 
 	// delete removes a triple from the database.
 	// It returns false if the triple was not stored, otherwise true.
+	// If remoteSync throws an error, the transaction will be rolled back and
+	// the function returns false.
 	delete(triple) {
-		if ( this._graph.delete(triple) ) {
-			// TODO fetch('/services/type', {method: 'patch'})
-			this._broadcast("deleted", triple)
-			return true
+		if ( !this._graph.delete(triple) ) {
+			return false
 		}
-		return false
+		let op = "deleted"
+		let error
+		let ok = true
+		try {
+			this._remoteSync({op, triple})
+		} catch(err) {
+			// Remote sync failed; rollback transaction:
+			this._graph.insert(triple)
+			error = err
+			ok = false
+		} finally {
+			this._broadcast(op, triple, error)
+			return ok
+		}
 	}
 
 	// replaceObject translates into a insert and delete query,
 	// deleting the triple and inserting it again except with
 	// the given object.
 	// It returns false if the triple was not stored, otherwise true.
+	// If remoteSync throws an error, the transaction will be rolled back and
+	// the function returns false.
 	replaceObject(triple, obj) {
 		if ( !this._graph.delete(triple) ) {
 			return false
@@ -97,9 +115,22 @@ export class DB {
 			return false
 		}
 
-		// TODO fetch('/services/type', {method: 'patch'})
-		this._broadcast("replacedObj", newTriple)
-		return true
+		let op = "replacedObj"
+		let error
+		let ok = true
+		try {
+			this._remoteSync({op: "deleted", triple},
+							 {op: "inserted", newTriple})
+		} catch(err) {
+			// Remote sync failed; rollback transaction:
+			this._graph.delete(newTriple)
+			this._graph.insert(triple)
+			error = err
+			ok = false
+		} finally {
+			this._broadcast(op, newTriple, error)
+			return ok
+		}
 	}
 
 
@@ -107,13 +138,11 @@ export class DB {
 
 	// broadcast wil broadcast the transaction to any subscribers, in the format:
 	//   { op: "inserted|deleted|replacedObj", triple: triple }
-	//   If the obj parameter is defined, the message originates from
-	//   replaceObject, and thus two messages will be broadcasted;
-	//   one for the delete statement and one for the insert statement.
-	_broadcast(op, triple, obj, error) {
+	//   If the error parameter is defined, it will be part of the message.
+	_broadcast(op, triple, error) {
 		for (let s of this._subscribers) {
 			if (s.triple.matches(triple)) {
-				s.cb({[op]: triple})
+				s.cb( Object.assign({[op]: triple}, error) )
 			}
 		}
 	}

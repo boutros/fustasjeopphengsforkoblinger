@@ -35,7 +35,7 @@
       "test/*.js"
     ],
     "failFast": true,
-    "tap": true,
+    "tap": false,
     "require": [
       "babel-register"
     ]
