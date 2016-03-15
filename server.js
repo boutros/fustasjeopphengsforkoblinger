@@ -2,11 +2,12 @@
 
 const path = require('path')
 const express = require('express')
+const requestProxy = require('express-request-proxy')
 const axios = require('axios') // TODO replace with isomorphic-fetch
 const xml2js = require('xml2js')
 
 const app = express()
-const port = process.env.PORT || 8000
+const port = process.env.PORT || 8888
 const z3950proxy = 'http://localhost:3000/'
 
 function subfield (datafield, code) {
@@ -53,10 +54,9 @@ function previewsFromCollection(records) {
 
 app.use(express.static(__dirname + '/public'))
 
-app.all('/services/*', (req, res) => {
-	console.log(req)
-	res.send("simulating services")
-})
+app.all('/services/*', requestProxy({
+  url: 'http://localhost:8005/*'
+}))
 
 app.get('/search/z3950', (req, res) => {
 	// validate params

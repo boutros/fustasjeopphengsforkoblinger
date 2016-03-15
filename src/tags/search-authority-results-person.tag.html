@@ -5,21 +5,21 @@
 				<input type="radio" name="person"/>
 			</div>
 			<div class="result relative">
-				<div class="clickable" onclick={ toggleWorks }><strong>{ res.person.name }</strong></div>
+				<div class="clickable" onclick={ toggleWorks }><strong>{ res._source.person.name }</strong></div>
 				<div>
-					<span if={ res.person.birthYear}>{ res.person.birthYear } - </span>
-					{ res.person.deathYear}
-					<span if={ res.person.nationality }>, { res.person.nationality }</span>
+					<span if={ res._source.person.birthYear}>{ res._source.person.birthYear } - </span>
+					{ res._source.person.deathYear}
+					<span if={ res._source.person.nationality }> { res._source.person.nationality }</span>
 				</div>
 
-				<div if={ res.person.work } onclick={ toggleWorks }
+				<div if={ res._source.person.work } onclick={ toggleWorks }
 					class={ caret: true, openup: parent.visibleWorks[i] }>
 				</div>
-				<ul if={ res.person.work && parent.visibleWorks[i] }>
-					<li each={ res.person.work} class="relative">
+				<ul if={ res._source.person.work && parent.visibleWorks[i] }>
+					<li each={ res._source.person.work} class="relative">
 						{ mainTitle }
 						<span if={ publicationYear}>({publicationYear})</span>
-						<input class="choose-work" name={ res.person.name } type="radio"/>
+						<input class="choose-work" name={ res._source.person.name } type="radio"/>
 					</li>
 				</ul>
 			</div>

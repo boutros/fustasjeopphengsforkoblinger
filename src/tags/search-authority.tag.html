@@ -1,4 +1,5 @@
 import { debounce} from '../common.js'
+import { status, json, queryParams } from '../http-helpers.js'
 
 <search-authority class="relative" type={ opts.type }>
 	<input class="search" oninput={ doSearch } type="search"/>
@@ -13,69 +14,36 @@ import { debounce} from '../common.js'
 		const tag = this
 		const debounceMs = 400
 
-		let dummyRes = [
-			{
-				"person": {
-					"name":  "Healey, Emma",
-					"birthYear": "1915",
-					"deathYear": "1972",
-					"nationality": "Engelsk",
-					"work": [
-						{
-							"mainTitle": "Mitt siste verk",
-							"publicationYear": "1946",
-						},
-						{
-							"mainTitle": "Mitt første verk",
-							"publicationYear": "1931",
-						},
-					]
-				}
-			},
-			{
-				"person": {
-					"name":  "Healey, Emmanuel",
-					"birthYear": "1832",
-					"deathYear": "1893",
-					"nationality": "Engelsk",
-					"work": [
-						{
-							"mainTitle": "My only book",
-							"publicationYear": "1845",
-						}
-					]
-				}
-			},
-			{
-				"person": {
-					"name":  "Healey, Ernest",
-					"birthYear": "1942",
-					"deathYear": "2004",
-					"nationality": "Skotsk"
-				}
-			}
-
-		]
-
 		tag.query = ""
 		tag.gotResults = false
+		tag.searching = false
+		tag.results = []
 
 		let debouncedSearch = debounce(
 			function(query) {
-				setTimeout(function() {
-					tag.gotResults = true
-					tag.opts.events.trigger('searchResults', dummyRes)
-				}, 500) }, debounceMs)
+				tag.searching = true
+				tag.gotResults = false
+				tag.update()
+				fetch('/services/search/person/_search?q='+query)
+					.then(status)
+					.then(json)
+					.then(function(data) {
+						tag.searching = false
+						tag.gotResults = (data.hits.total > 0)
+						tag.opts.events.trigger('searchResults', data.hits.hits)
+						tag.update()
+					})
+					.catch(function (error) {
+						console.log('request failed', error)
+					})
+			}, debounceMs)
 
 		tag.doSearch = function(event) {
-			tag.gotResults = false
-			tag.query = event.target.value.trim()
-			if (tag.query === "") {
-				tag.opts.events.trigger('searchResults',[])
+			let query = event.target.value.trim()
+			if (query === "") {
 				return
 			}
-			tag.opts.events.trigger('searching')
-			debouncedSearch(tag.query)
+			debouncedSearch(query)
 		}
 	</script>
 </search-authority>
