@@ -1,4 +1,4 @@
-<person-search-results >
+<search-authority-results-person>
 	<div class="outer">
 		<div each={ res, i in opts.results } class="box">
 			<div class="radio">
@@ -27,19 +27,6 @@
 		<p if={ opts.results.length == 0 }><em>Ingen treff</em></p>
 	</div>
 
-	let tag = this
-
-	tag.visibleWorks = {}
-
-	toggleWorks(event) {
-		let i = event.item.i
-		if (tag.visibleWorks[i]) {
-			tag.visibleWorks[i] = undefined
-		} else {
-			tag.visibleWorks[i] = true
-		}
-	}
-
 	<style scoped>
 		.outer { box-sizing: border-box; border: 4px solid #ded; background: #ded;
 	             position: absolute; top:0; right: -30rem; width: 28rem;
@@ -51,4 +38,18 @@
 		.choose-work { position: absolute; top: 0.5em; right: 1em; }
 		li { border-bottom: 2px solid #444; cursor: pointer;}
 	</style>
-</person-search-results>
+
+	<script>
+		const tag = this
+		tag.visibleWorks = {}
+
+		tag.toggleWorks = function(event) {
+			let i = event.item.i
+			if (tag.visibleWorks[i]) {
+				tag.visibleWorks[i] = undefined
+			} else {
+				tag.visibleWorks[i] = true
+			}
+		}
+	</script>
+</search-authority-results-person>

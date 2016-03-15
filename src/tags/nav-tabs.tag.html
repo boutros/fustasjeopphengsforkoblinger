@@ -1,4 +1,4 @@
-<tabs>
+<app-tabs>
 	<ul>
 		<li onclick={ select }
 		    class={ active: active == i}
@@ -17,11 +17,13 @@
 		.active { background-color: #cde; cursor: default;}
 	</style>
 
-	let tag = this
+	<script>
+		const tag = this
 
-	tag.active = 0
+		tag.active = 0
 
-	select(event) {
-		tag.active = event.item.i
-	}
-</tabs>
+		tag.select = function(event) {
+			tag.active = event.item.i
+		}
+	</script>
+</app-tabs>

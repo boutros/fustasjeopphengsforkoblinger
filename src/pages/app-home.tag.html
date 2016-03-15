@@ -1,10 +1,10 @@
-import '../tags/authority-search.tag'
+import '../tags/search-authority.tag.html'
 
-<start>
+<app-home>
 	<div class="row">
 		<div class="col">
 			<h2>Katalogisering og vedlikehold av samlingen</h2>
-		
+
 			<h3>Nytt materiale</h3>
 			<ul class="workflow-links">
 				<li><a href="/bok">Bøker</a></li>
@@ -17,15 +17,18 @@ import '../tags/authority-search.tag'
 			<h3>Vedlikehold av autoriteter</h3>
 			<p>For å opprette en ny autoritet - søk først opp i det aktuelle autoritetsregisteret for å sikre deg at den ikke finnes fra før.</p>
 			<ul>
-				<li><authority-search label="Personer"/></li>
-				<li><authority-search label="Emner"/></li>
-				<li><authority-search label="Verk"/></li>
-				<li><authority-search label="Sjangere"/></li>
-				<li><authority-search label="Organisasjoner"/></li>
-				<li><authority-search label="Steder"/></li>
+				<li><search-authority label="Personer"/></li>
+				<li><search-authority label="Emner"/></li>
+				<li><search-authority label="Verk"/></li>
+				<li><search-authority label="Sjangere"/></li>
+				<li><search-authority label="Organisasjoner"/></li>
+				<li><search-authority label="Steder"/></li>
 			</ul>
 		</div>
 		<div class="col half"></div>
 	</div>
 	<div class="row"></div>
-</start>
+
+	<script>
+	</script>
+</app-home>

@@ -1,0 +1,50 @@
+import './input-dropdown.tag.html'
+import './search-authority.tag.html'
+import './search-authority-results-person.tag.html'
+
+<book-main-entry>
+	<div if={ !noMainEntry }>
+		<p>
+			<strong>Type: </strong>
+			<input-dropdown options={ types } events={ events }></input-dropdown>
+		</p>
+		<p class="relative">
+			<search-authority type={ type } events={ events }></search-authority>
+			<search-authority-results-person if={ type === "Person" && results } results={ results }>
+			</search-authority-results-person>
+			<corporation-search-results if={ type === "Corporation" && results }></corporation-search-results>
+		</p>
+	</div>
+	<p>
+		<input onClick={ toggleMainEntry } type="checkbox" />
+		<label>boken har ingen hovedinnførsel</label>
+	</p>
+
+	<script>
+		const tag = this
+
+		tag.types = [
+			{label: "Person", value: "Person"},
+			{label: "Korporasjon", value: "Corporation"}]
+		tag.type = tag.types[0].value
+		tag.results = undefined
+		tag.value // selected main entry (person or corporation URI)
+		tag.noMainEntry = false
+
+		tag.toggleMainEntry = function() {
+			tag.noMainEntry = !tag.noMainEntry
+			return true // check the box
+		}
+
+		tag.events = riot.observable()
+		tag.events.on('selected', function(value) {
+			tag.update({ type: value })
+		})
+		tag.events.on('searching', function(res) {
+			tag.update({ results: undefined })
+		})
+		tag.events.on('searchResults', function(res) {
+			tag.update({ results: res })
+		})
+	</script>
+</book-main-entry>

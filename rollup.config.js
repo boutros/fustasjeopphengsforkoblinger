@@ -7,7 +7,9 @@ export default {
   entry: 'src/main.js',
   dest: 'public/bundle.js',
   plugins: [
-    riot(),
+    riot({
+      ext: 'html'
+    }),
     nodeResolve({
       jsnext:  true, // if provided in ES6
       main:    true, // if provided in CommonJS

@@ -1,17 +1,17 @@
-<dropdown>
+<input-dropdown>
   <select name="dropdown" onchange={ selected }>
     <option each={ opts.options } value={ value }>{ label }</option>
   </select>
+
   <script>
-    var tag = this
-    
-    selected(event) {
+    const tag = this
+
+    tag.selected = function(event) {
       tag.opts.events.trigger('selected', event.target.value)
     }
 
-    select(event) {
+    tag.select = function(event) {
       // TODO update dropdown value
     }
-    
   </script>
-</dropdown>
+</input-dropdown>

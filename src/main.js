@@ -1,8 +1,8 @@
 import riot from 'riot'
 
 // import pages
-import './pages/start.tag'
-import './pages/book.tag'
+import './pages/app-home.tag.html'
+import './pages/app-book.tag.html'
 
 // currently active page:
 let mounted
@@ -17,9 +17,9 @@ riot.route(function(page) {
 
 	switch (page) {
 		case 'bok':
-			mounted = riot.mount('book')
+			mounted = riot.mount('app-book')
 			break
 		default:
-			mounted = riot.mount('start')
+			mounted = riot.mount('app-home')
 	}
 })

@@ -1,22 +1,22 @@
-import '../tags/external-search.tag'
-import '../tags/tabs.tag'
-import '../tags/main-entry.tag'
-import '../tags/literal-input.tag'
+import '../tags/search-external.tag.html'
+import '../tags/nav-tabs.tag.html'
+import '../tags/book-main-entry.tag.html'
+import '../tags/input-literal.tag.html'
 
-<book>
+<app-book>
 	<div class="row">
 		<div class="col">
 			<h3>Katalogisering av bok</h3>
-			<tabs targets={ tabs }></tabs>
+			<nav-tabs targets={ tabs }></nav-tabs>
 		</div>
 		<div class="col half panel">
-			<external-search /></external-search>
+			<search-external></search-external>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col half panel">
 			<h4>Hovedinnførsel</h4>
-			<main-entry></main-entry>
+			<book-main-entry></book-main-entry>
 		</div>
 	</div>
 	<div class="row">
@@ -25,19 +25,19 @@ import '../tags/literal-input.tag'
 			<h5>Tittelopplysninger</h5>
 			<p>
 				<strong>Hovedtittel</strong>
-				<literal-input></literal-input>
+				<input-literal></input-literal>
 			</p>
 			<p>
 				<strong>Undertittel</strong>
-				<literal-input></literal-input>
+				<input-literal></input-literal>
 			</p>
 			<p>
 				<strong>Deltittel</strong>
-				<literal-input></literal-input>
+				<input-literal></input-literal>
 			</p>
 			<p>
 				<strong>Delnummer</strong>
-				<literal-input></literal-input>
+				<input-literal></input-literal>
 			</p>
 		</div>
 	</div>
@@ -62,7 +62,9 @@ import '../tags/literal-input.tag'
 		</div>
 	</div>
 
-	let tag = this
+	<script>
+		const tag = this
 
-	tag.tabs = ["Hovedinnførsel", "Beskriv utgivelse", "Beskriv verk", "Emner og sjangrer", "Deler", "Biinførsler"]
-</book>
+		tag.tabs = ["Hovedinnførsel", "Beskriv utgivelse", "Beskriv verk", "Emner og sjangrer", "Deler", "Biinførsler"]
+	</script>
+</app-book>
