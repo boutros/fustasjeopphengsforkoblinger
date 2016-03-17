@@ -73,7 +73,29 @@ export class NamedNode {
 }
 
 export class BlankNode {
+	constructor(id) {
+		// TODO check if id is allready used in graph; if so, asign a new one
+		this._id = id
+	}
 
+	termType() {
+		return "blankNode"
+	}
+
+	toString() {
+		return `_:${this._id}`
+	}
+
+	value() {
+		return this._id
+	}
+
+	equals(other) {
+		return (
+			other.termType() === "blankNode" &&
+			other._id === this._id
+		)
+	}
 }
 
 export class Literal {
@@ -99,8 +121,8 @@ export class Literal {
 			other._value === this._value // TODO + datatype or langtag
 		)
 	}
-
 }
+
 export class Variable {
 	constructor(id) {
 		this._id = id
