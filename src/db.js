@@ -54,7 +54,7 @@ export class DB {
 	// If remoteSync throws an error, the transaction will be rolled back and
 	// the function returns false.
 	insert(triple) {
-		if ( !this._graph.insert(triple) ) {
+		if ( this._graph.insert(triple) !== 1 ) {
 			return false
 		}
 		let op = "inserted"
@@ -78,7 +78,7 @@ export class DB {
 	// If remoteSync throws an error, the transaction will be rolled back and
 	// the function returns false.
 	delete(triple) {
-		if ( !this._graph.delete(triple) ) {
+		if ( this._graph.delete(triple) !== 1 ) {
 			return false
 		}
 		let op = "deleted"

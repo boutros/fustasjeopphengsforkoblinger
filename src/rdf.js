@@ -24,23 +24,33 @@ export class Graph {
 		return false
 	}
 
-	insert(triple) { // TODO insert(triple...)
-		if (this.has(triple)) {
-			return false
+	// insert one or more triples into the graph. Returns the number
+	// of triples insterted, that where not allready part of the graph.
+	insert(...triples) {
+		let c = 0
+		for (let t of triples) {
+			if (!this.has(t)) {
+				this._triples.push(t)
+				c++
+			}
 		}
-		this._triples.push(triple)
-		return true
+		return c
 	}
 
-	delete(triple) { // TODO delete(triple...)
-		let ok = false
-		this._triples.forEach(function(hasTr, i, triples) {
-			if (hasTr.equals(triple)) {
-				triples.splice(i,1)
-				ok = true
-			}
-		})
-		return ok
+	// delete one or more triples from the graph. Returns the number
+	// of triples deleted, not counting those that where not part of the graph.
+	delete(...triples) {
+		let c = 0
+		for (let t of triples) {
+			this._triples.forEach(function(hasTr, i, ownTriples) {
+				if (hasTr.equals(t)) {
+					ownTriples.splice(i,1)
+					c++
+					return
+				}
+			})
+		}
+		return c
 	}
 
 	triples()      {

@@ -57,10 +57,11 @@ test("marc2rdf", t =>  {
 
 	let want = new Graph()
 	let subj = uri('http://test/p/1')
-	want.insert(new Triple(subj, pred('mainTitle'), lit('Blåskjegg')))
-	want.insert(new Triple(subj, pred('subtitle'), lit('roman')))
-	want.insert(new Triple(subj, pred('publishYear'), lit('1990')))
-	want.insert(new Triple(subj, pred('numPages'), lit('271')))
+	want.insert(
+		new Triple(subj, pred('mainTitle'), lit('Blåskjegg')),
+		new Triple(subj, pred('subtitle'), lit('roman')),
+		new Triple(subj, pred('publishYear'), lit('1990')),
+		new Triple(subj, pred('numPages'), lit('271')))
 
 	let xml
 	xml2js.parseString(xmlSample, function (err, data) {
