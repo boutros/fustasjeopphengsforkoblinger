@@ -4,51 +4,10 @@ import { DB } from '../src/db.js'
 import test from 'ava'
 
 let uri = (u) => new NamedNode(u)
-let vari = (v) => new Variable()
+let vari = (v) => new Variable(v)
 let lit = (v) => new Literal(v)
 
-// TODO move to graph_test.js
-test("triple matching", t => {
-	let tests = [
-		[
-			new Triple(uri("s"), uri("p"), uri("o")),
-			new Triple(uri("s"), uri("p"), uri("o")),
-			true
-		],
-		[
-			new Triple(uri("s"), uri("p"), uri("o")),
-			new Triple(uri("s"), uri("p"), uri("oO")),
-			false
-		],
-		[
-			new Triple(vari("subj"), uri("p"), uri("o")),
-			new Triple(uri("s"), uri("p"), uri("o")),
-			true
-		],
-		[
-			new Triple(vari("subj"), vari("p"), uri("o")),
-			new Triple(uri("s"), uri("p"), uri("o")),
-			true
-		],
-		[
-			new Triple(vari("subj"), vari("p"), vari("o")),
-			new Triple(uri("s"), uri("p"), uri("o")),
-			true
-		],
-		[
-			new Triple(vari("subj"), uri("p2"), uri("o")),
-			new Triple(uri("s"), uri("p"), uri("o")),
-			false
-		]
-	]
-
-	for (let tt of tests) {
-		t.is(tt[0].matches(tt[1]), tt[2])
-	}
-})
-
-
-test("subscribing to graph patterns", t => {
+test("triple pattern subscription and notifications", t => {
 	let recievedCalls = []
 	let db = new DB
 	let cb = function(transaction) {
