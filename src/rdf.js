@@ -53,6 +53,11 @@ export class Graph {
 		return c
 	}
 
+	construct(query) {
+		// TODO
+		return new Graph
+	}
+
 	triples()      {
 		return this._triples
 	}
@@ -187,3 +192,16 @@ export class Triple {
 	}
 }
 
+class Query {
+	constructor(...triplePatterns) {
+		this.patterns = [...triplePatterns]
+	}
+
+	where(...triplePatterns) {
+		return this
+	}
+}
+
+export function query(...triplePatterns) {
+	return new Query(...triplePatterns)
+}
