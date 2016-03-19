@@ -1,4 +1,4 @@
-import { NamedNode, BlankNode, Literal, Triple, Variable, Graph, query } from '../src/rdf.js'
+import { NamedNode, BlankNode, Literal, Triple, Variable, Graph } from '../src/rdf.js'
 
 import test from 'ava'
 
@@ -80,9 +80,62 @@ test("graph querying", t => {
 	]
 	let g = graph()
 	g.insert(...triples)
+	let q
 
-	let q = query(triples[0])
+	/*
+	CONSTRUCT WHERE {
+		<person/1> <name> "Tor Åge Bringsværd"
+	}
+	=>
+	<person/1> <name> "Tor Åge Bringsværd"
+	*/
 	let want = graph()
 	want.insert(triples[0])
+	t.true(g.construct(triples[0]).equals(want))
+
+	/*
+	CONSTRUCT WHERE {
+		<person/1> <name> ?name
+	}
+	=>
+	<person/1> <name> "Tor Åge Bringsværd" .
+	*/
+	want = graph()
+	want.insert(triples[0])
+	q = tr(
+		uri("person/1"),
+		uri("name"),
+		vari("name"))
 	t.true(g.construct(q).equals(want))
+
+	/*
+	CONSTRUCT WHERE {
+		?person <name> ?name
+	}
+	=>
+	<person/1> <name> "Tor Åge Bringsværd" .
+	<person/2> <name> "Jon Bing" .
+	<person/3> <name> "Peter Haars" .
+	<person/4> <name> "Thore Hansen" .
+	*/
+	want = graph()
+	want.insert(triples[0], triples[1], triples[2], triples[3])
+	q = tr(
+		vari("person"),
+		uri("name"),
+		vari("name"))
+	t.true(g.construct(q).equals(want))
+
+
+	/*
+	CONSTRUCT WHERE {
+		?s ?p ?o
+	}
+	=> the whole graph
+	*/
+	q = tr(
+		vari("s"),
+		vari("p"),
+		vari("o"))
+	t.true(g.construct(q).equals(g))
 })

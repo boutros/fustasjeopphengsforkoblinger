@@ -53,21 +53,37 @@ export class Graph {
 		return c
 	}
 
-	construct(query) {
-		// TODO
-		return new Graph
+	// construct a graph matching the given triple patterns. Corresponds to
+	// CONSTRUCT WHERE queries in SPARQL (where template and pattern are the same)
+	construct(...triples) {
+		let g = new Graph
+		for (let t of triples) {
+			let matcher = this._matches(t)
+			for (let match of matcher) {
+				g.insert(match)
+			}
+		}
+		return g
 	}
 
-	triples()      {
+	triples() {
 		return this._triples
 	}
 
-	toString()     {
+	toString() {
 		let s = ""
 		for (let t of this._triples) {
 			s += t.toString()
 		}
 		return s
+	}
+
+	* _matches (triple) {
+		for (let t of this._triples) {
+			if (triple.matches(t)) {
+				yield t
+			}
+		}
 	}
 }
 
@@ -190,18 +206,4 @@ export class Triple {
 	toString() {
 		return `${this.s} ${this.p} ${this.o} .\n`
 	}
-}
-
-class Query {
-	constructor(...triplePatterns) {
-		this.patterns = [...triplePatterns]
-	}
-
-	where(...triplePatterns) {
-		return this
-	}
-}
-
-export function query(...triplePatterns) {
-	return new Query(...triplePatterns)
 }
