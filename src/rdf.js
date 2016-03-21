@@ -71,11 +71,7 @@ export class Graph {
 	}
 
 	toString() {
-		let s = ""
-		for (let t of this._triples) {
-			s += t.toString()
-		}
-		return s
+		return this._triples.join("\n")
 	}
 
 	* _matches (triple) {
@@ -204,6 +200,6 @@ export class Triple {
 	}
 
 	toString() {
-		return `${this.s} ${this.p} ${this.o} .\n`
+		return `${this.s} ${this.p} ${this.o} .`
 	}
 }
