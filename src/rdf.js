@@ -57,13 +57,41 @@ export class Graph {
 	// CONSTRUCT WHERE queries in SPARQL (where template and pattern are the same)
 	construct(...triples) {
 		let g = new Graph
-		for (let t of triples) {
-			let matcher = this._matches(t)
-			for (let match of matcher) {
-				g.insert(match)
-			}
+		let matcher
+		switch (triples.length) {
+			case 1:
+				matcher = this._matches(triples[0])
+				for (let match of matcher) {
+					g.insert(match)
+				}
+				return g
+			case 2:
+				let group1 = []
+				let group2 = []
+
+				matcher = this._matches(triples[0])
+				for (let match of matcher) {
+					group1.push(match)
+				}
+				matcher = this._matches(triples[1])
+				for (let match of matcher) {
+					group2.push(match)
+				}
+
+				for (let a of group1) {
+					for (let b of group2) {
+						if (a.s.equals(b.o) || a.o.equals(b.s)) {
+							g.insert(a)
+							g.insert(b)
+						}
+					}
+				}
+
+				return g
+			default:
+				throw new Error("only 1 or 2 triple patterns are currently supported")
 		}
-		return g
+
 	}
 
 	triples() {

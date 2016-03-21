@@ -82,6 +82,8 @@ test("graph querying", t => {
 	g.insert(...triples)
 	let q
 
+	// Test one triple pattern queries:
+
 	/*
 	CONSTRUCT WHERE {
 		<person/1> <name> "Tor Åge Bringsværd"
@@ -138,4 +140,72 @@ test("graph querying", t => {
 		vari("p"),
 		vari("o"))
 	t.true(g.construct(q).equals(g))
+
+	// Test two triple pattern queries:
+
+	/*
+	CONSTRUCT WHERE {
+		<book/1> <contributor> ?contribution .
+		?contribution <agent> ?agent .
+	}
+	=>
+	<book/1> <contribution> :b1,
+	_:b1 <agent> <person/1> .
+	<book/1> <contribution> :b2,
+	_:b2 <agent> <person/2> .
+	<book/1> <contribution> :b3,
+	_:b3 <agent> <person/3> .
+	*/
+	want = graph()
+	want.insert(triples[6], triples[7], triples[9], triples[10], triples[13], triples[14])
+	q = [
+		tr(uri("book/1"), uri("contributor"), vari("contribution")),
+		tr(vari("contribution"), uri("agent"), vari("agent"))
+	]
+	t.true(g.construct(...q).equals(want))
+
+	/*
+	CONSTRUCT WHERE {
+		?contribution <agent> ?agent .
+		<book/1> <contributor> ?contribution .
+	}
+	=>
+	<book/1> <contribution> :b1,
+	_:b1 <agent> <person/1> .
+	<book/1> <contribution> :b2,
+	_:b2 <agent> <person/2> .
+	<book/1> <contribution> :b3,
+	_:b3 <agent> <person/3> .
+	*/
+	q = [
+		tr(uri("book/1"), uri("contributor"), vari("contribution")),
+		tr(vari("contribution"), uri("agent"), vari("agent"))
+	]
+	t.true(g.construct(...q).equals(want)) // want unchanged from previous test
+
+
+	/*
+	CONSTRUCT WHERE {
+		<book/1> <contributor> ?contribution .
+		?contribution ?p ?o .
+	}
+	=>
+	<book/1> <contribution> :b1,
+	_:b1 <agent> <person/1> .
+	_:b1 <role> <author> .
+	<book/1> <contribution> :b2,
+	_:b2 <agent> <person/2> .
+	_:b2 <role> <author> .
+	_:b2 <a> <MainEntry>.
+	<book/1> <contribution> :b3,
+	_:b3 <agent> <person/3> .
+	_:b3 <role> <coverIllustrator> .
+	*/
+	want = graph()
+	want.insert(...triples.slice(6,16))
+	q = [
+		tr(uri("book/1"), uri("contributor"), vari("contribution")),
+		tr(vari("contribution"), vari("p"), vari("o"))
+	]
+	t.true(g.construct(...q).equals(want))
 })
