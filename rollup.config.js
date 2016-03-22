@@ -17,6 +17,8 @@ export default {
     }),
     commonjs(),
     babel({
+      plugins: ['transform-runtime'], // TODO figure out how to use this properly (check rollup warnings)
+      runtimeHelpers: true,
       babelrc: false,
       presets: ['es2015-rollup'],
       exclude: 'node_modules/**'

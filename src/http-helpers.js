@@ -17,3 +17,7 @@ export function queryParams(params) {
 	}
 	return "?"+res.join("&")
 }
+
+export function idFromUri(uri) {
+  return uri.substring(uri.lastIndexOf('/')+1)
+}
