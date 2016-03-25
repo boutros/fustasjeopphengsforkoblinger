@@ -1,12 +1,12 @@
 import riot from 'riot'
 import { status, json, idFromUri } from './http-helpers.js'
-import { DB } from './db.js'
+import { parser } from './jsonld.js'
+import state from './state.js'
 
 import './pages/app-home.tag.html'
 import './pages/app-book.tag.html'
 
 let mounted     // currently active page
-let db = new DB // the state of the resource we are editing (with linked resources)
 
 riot.route.base('/')
 riot.route.start(true)
@@ -25,8 +25,12 @@ riot.route(function(page) {
 					.then(status)
 					.then(json)
 					.then(function(data) {
-						console.log(data)
-						// TODO mount app-book here?
+						state.centerNode = publication
+						mounted = riot.mount('app-book')
+						let p = parser(data)
+						for (let triple of p) {
+							state.db.insert(triple)
+						}
 					})
 					.catch(function (error) {
 						console.log('request failed', error)
@@ -36,18 +40,16 @@ riot.route(function(page) {
 				fetch('/services/publication', {method: 'post'})
 					.then(status)
 					.then(function(response) {
-						let resource = response.headers.get('location')
-						if (!resource) {
+						let publication = response.headers.get('location')
+						if (!publication) {
 							throw new Error("publication resource URI not found in location headers")
 						}
-						// TODO mount app-book here?
-						riot.route("/book?publication="+resource)
+						riot.route("/book?publication="+publication)
 					})
 					.catch(function (error) {
 						console.log('request failed', error)
 					})
 			}
-			mounted = riot.mount('app-book')
 			break
 		default:
 			mounted = riot.mount('app-home')

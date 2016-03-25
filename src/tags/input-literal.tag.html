@@ -1,7 +1,35 @@
+import dbmixin from '../dbmixin.js'
+import { NamedNode, Triple, Variable } from '../rdf.js'
+import state from '../state.js'
+
 <input-literal>
-	<input type="text">
+	<input type="text" name="literal">
 
 	<style scoped>
 		input { width: 100% }
 	</style>
+
+	<script>
+		let tag = this
+		tag.previousValue = undefined
+
+		if (!tag.opts.predicate) {
+			throw new Error("input-literal must have a opts.predicate")
+		}
+
+		let pattern = new Triple(
+			new NamedNode(state.centerNode),
+			new NamedNode(state.ns + tag.opts.predicate),
+			new Variable(""))
+
+		tag.mixin(dbmixin(pattern))
+
+		tag.dbEvents.on('dbupdate', function(tx) {
+			if (tx.inserted) {
+				tag.literal.value = tx.inserted.o.value()
+				tag.previousValue = tag.literal.value
+			}
+		})
+
+	</script>
 </input-literal>

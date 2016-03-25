@@ -19,7 +19,7 @@ export function marc2rdf(marc, subject, ns) {
 
 	let subj = uri(subject)
 
-	for (let f of marc.record.datafield) {
+	for (let f of marc.datafield) {
 		switch (f.$.tag) {
 			case '245':
 				let mainTitle = subfieldVal(f, "a")

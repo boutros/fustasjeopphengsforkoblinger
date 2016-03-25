@@ -1,5 +1,7 @@
 import { debounce } from '../common.js'
 import { status, json, queryParams } from '../http-helpers.js'
+import { marc2rdf } from '../marc.js'
+import state from '../state.js'
 
 import './search-external-results.tag.html'
 
@@ -60,6 +62,10 @@ import './search-external-results.tag.html'
 		tag.events = riot.observable()
 		tag.events.on('selected', function(marc) {
 			tag.update({resultSelected: true})
+			let g = marc2rdf(marc, state.centerNode, state.ns)
+			for (let triple of g.triples()) {
+				state.db.insert(triple)
+			}
 		})
 		tag.events.on('unselected', function() {
 			tag.update({resultSelected: false})
