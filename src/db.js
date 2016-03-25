@@ -15,6 +15,13 @@ export class DB {
 		this._remoteSync = remoteSync
 	}
 
+	// clear empties the graph (but does not clear subscriptions)
+	clear() {
+		for (let triple of this._graph.triples()) {
+			this.delete(triple)
+		}
+	}
+
 	// has checks if the given triple is stored or not. Returns true or false.
 	has(triple) {
 		return this._graph.has(triple)

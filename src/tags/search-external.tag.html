@@ -63,6 +63,7 @@ import './search-external-results.tag.html'
 		tag.events.on('selected', function(marc) {
 			tag.update({resultSelected: true})
 			let g = marc2rdf(marc, state.centerNode, state.ns)
+			state.db.clear()
 			for (let triple of g.triples()) {
 				state.db.insert(triple)
 			}

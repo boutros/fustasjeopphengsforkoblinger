@@ -26,8 +26,13 @@ import state from '../state.js'
 
 		tag.dbEvents.on('dbupdate', function(tx) {
 			if (tx.inserted) {
+				// TODO patch /services
 				tag.literal.value = tx.inserted.o.value()
 				tag.previousValue = tag.literal.value
+			} else if (tx.deleted) {
+				// TODO patch /services
+				tag.literal.value = ""
+				tag.previousValue = undefined
 			}
 		})
 
