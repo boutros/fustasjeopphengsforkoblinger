@@ -19,5 +19,5 @@ export function queryParams(params) {
 }
 
 export function idFromUri(uri) {
-  return uri.substring(uri.lastIndexOf('/')+1)
+  return uri.substring(uri.lastIndexOf('/') + 1)
 }

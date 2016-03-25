@@ -72,7 +72,7 @@ test("marc2rdf", t =>  {
 		}
 	})
 
-	let got = marc2rdf(xml, 'http://test/p/1', 'http://test/ontology/')
+	let got = marc2rdf(xml, 'http://test/p/1', ns)
 
 	t.true(want.equals(got))
 })
