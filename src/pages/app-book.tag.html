@@ -9,17 +9,19 @@ import '../tags/input-literal.tag.html'
 			<h3>Katalogisering av bok</h3>
 			<nav-tabs targets={ tabs }></nav-tabs>
 		</div>
+	</div>
+	<div class="row" if={ activeTab == 0}>
 		<div class="col half panel">
 			<search-external></search-external>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row" if={ activeTab == 0}>
 		<div class="col half panel">
 			<h4>Hovedinnførsel</h4>
 			<book-main-entry></book-main-entry>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row" if={ activeTab == 1}>
 		<div class="col half panel">
 			<h4>Beskriv utgivelse</h4>
 			<h5>Tittelopplysninger</h5>
@@ -41,22 +43,22 @@ import '../tags/input-literal.tag.html'
 			</p>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row" if={ activeTab == 2} >
 		<div class="col half panel">
 			<h4>Beskriv verk</h4>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row" if={ activeTab == 3}>
 		<div class="col half panel">
 			<h4>Emner og sjangrer</h4>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row" if={ activeTab == 4}>
 		<div class="col half panel">
 			<h4>Deler</h4>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row" if={ activeTab == 5}>
 		<div class="col half panel">
 			<h4>Biinførsler</h4>
 		</div>
@@ -66,5 +68,7 @@ import '../tags/input-literal.tag.html'
 		const tag = this
 
 		tag.tabs = ["Hovedinnførsel", "Beskriv utgivelse", "Beskriv verk", "Emner og sjangrer", "Deler", "Biinførsler"]
+		tag.activeTab = 0
+
 	</script>
 </app-book>

@@ -17,7 +17,7 @@ p { line-height: 1.5rem; margin-top: 1.5rem; margin-bottom: 0; }
 /* grid */
 .row .row { margin:  0 -1.5em; }
 .col      { padding: 0  1.5em; }
-.row:before, .row:after { 
+.row:before, .row:after {
     content: "";
     display: table;
 }

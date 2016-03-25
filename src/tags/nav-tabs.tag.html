@@ -1,8 +1,8 @@
-<app-tabs>
+<nav-tabs>
 	<ul>
-		<li onclick={ select }
-		    class={ active: active == i}
-		    each={ tab,i in opts.targets }>
+		<li each={ tab,i in opts.targets }
+			onclick={ select }
+		    class={ active: parent.parent.activeTab == i} >
 		    { tab }
 		 </li>
 	</ul>
@@ -20,10 +20,10 @@
 	<script>
 		const tag = this
 
-		tag.active = 0
 
 		tag.select = function(event) {
-			tag.active = event.item.i
+			tag.parent.activeTab = event.item.i
+			tag.parent.update()
 		}
 	</script>
-</app-tabs>
+</nav-tabs>
