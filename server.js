@@ -55,7 +55,7 @@ function previewsFromCollection(records) {
 app.use(express.static(__dirname + '/public'))
 
 app.all('/services/*', requestProxy({
-  url: 'http://localhost:8005/*'
+	url: 'http://localhost:8005/*'
 }))
 
 app.get('/search/z3950', (req, res) => {
@@ -113,7 +113,7 @@ app.get('/search/z3950', (req, res) => {
 })
 
 app.get('*', (request, response) => {
-  response.sendFile(path.resolve(__dirname, 'index.html'))
+	response.sendFile(path.resolve(__dirname, 'index.html'))
 })
 
 app.listen(port)
