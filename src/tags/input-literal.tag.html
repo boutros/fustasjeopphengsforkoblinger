@@ -1,40 +1,79 @@
 import dbmixin from '../dbmixin.js'
-import { NamedNode, Triple, Variable } from '../rdf.js'
+import { NamedNode, Triple, Variable, Literal } from '../rdf.js'
+import { debounce } from '../common.js'
 import state from '../state.js'
 
 <input-literal>
-	<input type="text" name="literal">
+	<input type="text" name="literal" onkeyup={ changed }>
 
 	<style scoped>
 		input { width: 100% }
 	</style>
 
 	<script>
+		const debounceMs = 400 // TODO move to const.js
+
 		let tag = this
-		tag.previousValue = undefined
+		tag.previousValue = ""
 
 		if (!tag.opts.predicate) {
-			throw new Error("input-literal must have a opts.predicate")
+			throw new Error("input-literal must have an opts.predicate")
 		}
 
-		let pattern = new Triple(
+		tag.pattern = new Triple(
 			new NamedNode(state.centerNode),
 			new NamedNode(state.ns + tag.opts.predicate),
 			new Variable(""))
 
-		tag.mixin(dbmixin(pattern))
+		tag.mixin(dbmixin(tag.pattern))
 
 		tag.dbEvents.on('dbupdate', function(tx) {
 			if (tx.inserted) {
-				// TODO patch /services
 				tag.literal.value = tx.inserted.o.value()
 				tag.previousValue = tag.literal.value
 			} else if (tx.deleted) {
-				// TODO patch /services
 				tag.literal.value = ""
-				tag.previousValue = undefined
+				tag.previousValue = ""
 			}
 		})
+
+		let debounceUpdate = debounce(function(value) {
+			if (tag.previousValue !== "") {
+				if (value === "") {
+					state.db.delete(
+						new Triple(
+							tag.pattern.s,
+							tag.pattern.p,
+							new Literal(tag.previousValue)))
+				} else {
+					if (value === tag.previousValue) {
+						return
+					}
+					state.db.replaceObject(
+						new Triple(
+							tag.pattern.s,
+							tag.pattern.p,
+							new Literal(tag.previousValue)
+						),
+						new Literal(value))
+				}
+			} else {
+				if (value === "") {
+					return
+				}
+				state.db.insert(
+					new Triple(
+						tag.pattern.s,
+						tag.pattern.p,
+						new Literal(value)))
+			}
+			tag.previousValue = value
+		}, debounceMs)
+
+		tag.changed = function(event) {
+			debounceUpdate(event.target.value.trim())
+			return true
+		}
 
 	</script>
 </input-literal>

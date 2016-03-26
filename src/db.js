@@ -127,7 +127,7 @@ export class DB {
 		let ok = true
 		try {
 			this._remoteSync({op: "deleted", triple},
-							 {op: "inserted", newTriple})
+							 {op: "inserted", triple: newTriple})
 		} catch(err) {
 			// Remote sync failed; rollback transaction:
 			this._graph.delete(newTriple)
