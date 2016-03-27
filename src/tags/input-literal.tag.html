@@ -28,6 +28,9 @@ import state from '../state.js'
 		tag.mixin(dbmixin(tag.pattern))
 
 		tag.dbEvents.on('dbupdate', function(tx) {
+			if (tx.error) {
+				throw new Error("TODO handle failing transactions")
+			}
 			if (tx.inserted) {
 				tag.literal.value = tx.inserted.o.value()
 				tag.previousValue = tag.literal.value

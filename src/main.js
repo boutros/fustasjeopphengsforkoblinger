@@ -2,6 +2,7 @@ import riot from 'riot'
 import { status, json, idFromUri } from './http-helpers.js'
 import { parser } from './jsonld.js'
 import state from './state.js'
+import { syncToServices } from './http-helpers.js'
 
 import './pages/app-home.tag.html'
 import './pages/app-book.tag.html'
@@ -26,11 +27,19 @@ riot.route(function(page) {
 					.then(json)
 					.then(function(data) {
 						state.centerNode = publication
+						// We will populate UI DB, but without syncing to backend, as the
+						// data is just fetched from backend:
+						state.db._remoteSync = function() { }
+
 						mounted = riot.mount('app-book')
+
 						let p = parser(data)
 						for (let triple of p) {
 							state.db.insert(triple)
 						}
+						// UI DB is no populated, any subsequent inserts or deletes should
+						// sync to services backend:
+						state.db._remoteSync = syncToServices
 					})
 					.catch(function (error) {
 						console.log('request failed', error)

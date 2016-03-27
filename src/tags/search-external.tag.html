@@ -64,6 +64,7 @@ import './search-external-results.tag.html'
 			tag.update({resultSelected: true})
 			let g = marc2rdf(marc, state.centerNode, state.ns)
 			for (let triple of g.triples()) {
+				// TODO should first delete any triples allready filled out in the form..
 				state.db.insert(triple)
 			}
 		})
