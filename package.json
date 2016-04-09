@@ -15,20 +15,20 @@
     "axios": "^0.9.1",
     "express": "^4.13.4",
     "express-request-proxy": "^2.0.0",
-    "riot": "^2.3.15",
-    "riot-route": "^2.3.15",
+    "riot": "^2.3.18",
+    "riot-route": "^2.3.16",
     "xml2js": "^0.4.16"
   },
   "devDependencies": {
-    "ava": "^0.13.0",
+    "ava": "^0.14.0",
     "babel-plugin-transform-runtime": "^6.6.0",
     "babel-preset-es2015-rollup": "^1.0.0",
     "chokidar-cli": "^1.2.0",
-    "rollup": "^0.25.4",
+    "rollup": "^0.25.8",
     "rollup-plugin-babel": "^2.4.0",
     "rollup-plugin-commonjs": "^2.2.1",
     "rollup-plugin-multi-entry": "^1.1.0",
-    "rollup-plugin-node-resolve": "^1.4.0",
+    "rollup-plugin-node-resolve": "^1.5.0",
     "rollup-plugin-riot": "^0.1.1"
   },
   "ava": {
