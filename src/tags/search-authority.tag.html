@@ -24,7 +24,7 @@ import { status, json, queryParams } from '../http-helpers.js'
 				tag.searching = true
 				tag.gotResults = false
 				tag.update()
-				fetch('/services/search/person/_search?q='+query)
+				fetch(`/services/search/${tag.opts.type}/_search?q=${query}`)
 					.then(status)
 					.then(json)
 					.then(function(data) {

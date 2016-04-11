@@ -10,7 +10,6 @@ function parseNode(context, node) {
 	}
 
 	// not in context:
-
 	if (node.startsWith("http")) {
 		return new NamedNode(node)
 	}

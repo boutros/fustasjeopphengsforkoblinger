@@ -1,6 +1,7 @@
 import './input-dropdown.tag.html'
 import './search-authority.tag.html'
 import './search-authority-results-person.tag.html'
+import './search-authority-results-work.tag.html'
 
 <book-main-entry>
 	<div if={ !noMainEntry }>
@@ -10,29 +11,51 @@ import './search-authority-results-person.tag.html'
 		</p>
 		<p class="relative">
 			<search-authority type={ type } events={ events }></search-authority>
-			<search-authority-results-person if={ type === "Person" && results } results={ results }>
+			<search-authority-results-person if={ type === "person" && results } results={ results }>
 			</search-authority-results-person>
-			<corporation-search-results if={ type === "Corporation" && results }></corporation-search-results>
+			<corporation-search-results if={ type === "corporation" && results }></corporation-search-results>
 		</p>
 	</div>
 	<p>
-		<input onClick={ toggleMainEntry } type="checkbox" />
-		<label>boken har ingen hovedinnførsel</label>
+		<label>
+			<input onClick={ toggleMainEntry } type="checkbox" />
+			boken har ingen hovedinnførsel
+		</label>
 	</p>
+	<div if={ noMainEntry }>
+		<p if={ isWork } class="relative">
+			<strong>Verkstilknytning: </strong>
+			<search-authority type={ 'work' } events={ events }></search-authority>
+			<search-authority-results-work if={ results } results={ results }>
+			</search-authority-results-work>
+		</p>
+		<p>
+			<label>
+				<input onClick={ toggleNoWork } type="checkbox" />
+				dokumentet er ikke et eget verk
+			</label>
+		</p>
+	</div>
 
 	<script>
 		const tag = this
 
 		tag.types = [
-			{label: "Person", value: "Person"},
-			{label: "Korporasjon", value: "Corporation"}]
+			{label: "Person", value: "person"},
+			{label: "Korporasjon", value: "corporation"}]
 		tag.type = tag.types[0].value
 		tag.results = undefined
 		tag.value // selected main entry (person or corporation URI)
 		tag.noMainEntry = false
+		tag.isWork = true
 
 		tag.toggleMainEntry = function() {
 			tag.noMainEntry = !tag.noMainEntry
+			return true // check the box
+		}
+
+		tag.toggleNoWork = function() {
+			tag.isWork = !tag.isWork
 			return true // check the box
 		}
 

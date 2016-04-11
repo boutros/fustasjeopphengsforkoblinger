@@ -1,42 +1,51 @@
-/* normalize */
-html { font-family:serif; -ms-text-size-adjust:100%; -webkit-text-size-adjust:100%;
-	   background: #eee; font-size: 137.5%; -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale; }
-body { margin:0 auto; max-width: 60rem; background: #fff; color: #333; }
-pre { overflow:auto; font-family:monospace,monospace; font-size:0.8em }
-h1, h2, h3, h4, h5, h6 { margin-top: 1.5rem; margin-bottom: 0; line-height: 1.5rem; font-family:sans-serif;}
+/* normalize + base */
+html { font-family:sans-serif; -ms-text-size-adjust: 00%; -webkit-text-size-adjust:100%; font-size:100%;}
+body { margin:0; color: #333; background-color:#fff;}
+h1, h2, h3, h4, h5, h6 { margin-top:1.5rem; margin-bottom:0; line-height:1.5rem;
+  background-color:#fff; padding:0.1em 0.5em;}
+a, a:visited { background-color:transparent; color:blue; }
+a:active, a:hover { outline-width:0 }
+ul { list-style-type:none }
+b,strong { font-weight:inherit; font-weight:bolder }
+* { box-sizing: border-box }
+button,input,select,textarea{font:inherit}
+optgroup{font-weight:700}
+button,input,select{overflow:visible}
+button,input,select,textarea{margin:0}
+button,select{text-transform:none}
+button,[type="button"],[type="reset"],[type="submit"]{cursor:pointer}
+[disabled]{cursor:default}
+button,html [type="button"],[type="reset"],[type="submit"]{-webkit-appearance:button}
+button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
+button:-moz-focusring,input:-moz-focusring{outline:1px dotted ButtonText}
+fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}
+legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}
+textarea{overflow:auto}
+[type="checkbox"],[type="radio"]{box-sizing:border-box;padding:0}
+[type="number"]::-webkit-inner-spin-button,[type="number"]::-webkit-outer-spin-button{height:auto}
+[type="search"]{-webkit-appearance:textfield}
+[type="search"]::-webkit-search-cancel-button,[type="search"]::-webkit-search-decoration{-webkit-appearance:none}
 button,input,optgroup,select,textarea { color:inherit; font:inherit; margin:0 }
-button[disabled],html input[disabled] { cursor:default; color: #aaa; }
-input[type="search"] { -webkit-appearance:textfield; box-sizing:content-box }
-input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration { -webkit-appearance:none }
 table { border-collapse:collapse; border-spacing:0 }
 td,th { padding:0 }
-a, a:visited { color: blue; cursor: pointer;}
-p { line-height: 1.5rem; margin-top: 1.5rem; margin-bottom: 0; }
-
-/* grid */
-.row .row { margin:  0 -1.5em; }
-.col      { padding: 0  1.5em; }
-.row:before, .row:after {
-    content: "";
-    display: table;
-}
-.row:after { clear: both; }
-@media only screen { .col {
-    float: left;
-    width: 100%;
-    box-sizing: border-box;
-}}
 
 /* layout */
+.container { margin-left:220px; max-width: 1400px; }
+.col { width: 450px; background-color:#eee; padding:0 1em 10em 1em; }
+.panel { background:#fff; padding:0.5em;}
+/* page styles */
+.menu { position:fixed; top:0; left:0; width: 220px; overflow:hidden; background-color:#fff; height:100%;
+      text-align:right; padding: 0 1em;}
+.menu ul li { margin-bottom: 0.5em;}
+.col h4 { margin-top:2em; margin-bottom:10px; border-top:0.5em solid #ccc; }
 
-.half { width: 50%; }
-
+/* todo maybe remove from here */
 /* styles */
-h3, h4 { border-bottom: 1px solid #888; }
+
 p { line-height: 1.5em; margin-top: 1.5em; margin-bottom: 0; }
 ul { list-style-type: none; padding:0; }
 ul li { line-height: 1.5em; margin-bottom: 0.5em; }
+input[type="checkbox"], label { cursor: pointer; }
 label { font-weight: bold; }
 
 .hidden { display: none }
@@ -80,7 +89,6 @@ table th {
 }
 table td { padding-right: 1em; }
 
-.panel { box-sizing: border-box; border: 4px solid #cde; margin-top: 1em; padding-bottom: 1em;}
 .support-panel { box-sizing: border-box; border: 4px solid #ced; background: #ced;
 	             position: absolute; top:1.4em; right: -30rem; width: 28rem;
 	             max-height: 20rem; overflow-y: auto;}
@@ -91,10 +99,10 @@ table td { padding-right: 1em; }
   height: 0;
   margin-left: 2px;
   vertical-align: middle;
-  border-top: 10px solid #333;
+  border-top: 10px solid #666;
   border-right: 10px solid transparent;
   border-left: 10px solid transparent;
-  border-bottom: 0 solid #333;
+  border-bottom: 0 solid #666;
   overflow: hidden;
   transition: 200ms ease;
 }

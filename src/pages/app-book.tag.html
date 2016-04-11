@@ -1,73 +1,49 @@
 import '../tags/search-external.tag.html'
-import '../tags/nav-tabs.tag.html'
 import '../tags/book-main-entry.tag.html'
 import '../tags/input-literal.tag.html'
 
 <app-book>
-	<div class="row">
+	<div class="container">
 		<div class="col">
-			<h3>Katalogisering av bok</h3>
-			<nav-tabs targets={ tabs }></nav-tabs>
-		</div>
-	</div>
-	<div class="row" if={ activeTab == 0}>
-		<div class="col half panel">
-			<search-external></search-external>
-		</div>
-	</div>
-	<div class="row" if={ activeTab == 0}>
-		<div class="col half panel">
-			<h4>Hovedinnførsel</h4>
-			<book-main-entry></book-main-entry>
-		</div>
-	</div>
-	<div class="row" if={ activeTab == 1}>
-		<div class="col half panel">
+			<span>&nbsp;</span>
+
+			<h4>Søk i eksterne kilder</h4>
+			<div class="panel">
+				<search-external></search-external>
+			</div>
+
+			<h4>Hovedinnførsel / verkstilknytning</h4>
+			<div class="panel">
+				<book-main-entry></book-main-entry>
+			</div>
+
 			<h4>Tittelopplysninger</h4>
-			<p>
-				<strong>Hovedtittel</strong>
-				<input-literal predicate="mainTitle"></input-literal>
-			</p>
-			<p>
-				<strong>Undertittel</strong>
-				<input-literal predicate="subtitle"></input-literal>
-			</p>
-			<p>
-				<strong>Deltittel</strong>
-				<input-literal predicate="partTitle"></input-literal>
-			</p>
-			<p>
-				<strong>Delnummer</strong>
-				<input-literal predicate="partNumber"></input-literal>
-			</p>
+			<div class="panel">
+				<p>
+					<strong>Hovedtittel</strong>
+					<input-literal predicate="mainTitle"></input-literal>
+				</p>
+				<p>
+					<strong>Undertittel</strong>
+					<input-literal predicate="subtitle"></input-literal>
+				</p>
+				<p>
+					<strong>Deltittel</strong>
+					<input-literal predicate="partTitle"></input-literal>
+				</p>
+				<p>
+					<strong>Delnummer</strong>
+					<input-literal predicate="partNumber"></input-literal>
+				</p>
+			</div>
+
+
 		</div>
-	</div>
-	<div class="row" if={ activeTab == 2} >
-		<div class="col half panel">
-			<h4>Beskriv verk</h4>
-		</div>
-	</div>
-	<div class="row" if={ activeTab == 3}>
-		<div class="col half panel">
-			<h4>Emner og sjangrer</h4>
-		</div>
-	</div>
-	<div class="row" if={ activeTab == 4}>
-		<div class="col half panel">
-			<h4>Deler</h4>
-		</div>
-	</div>
-	<div class="row" if={ activeTab == 5}>
-		<div class="col half panel">
-			<h4>Biinførsler</h4>
-		</div>
+
 	</div>
 
 	<script>
 		const tag = this
-
-		tag.tabs = ["Hovedinnførsel", "Beskriv utgivelse", "Beskriv verk", "Emner og sjangrer", "Deler", "Biinførsler"]
-		tag.activeTab = 0
 
 	</script>
 </app-book>

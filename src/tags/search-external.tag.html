@@ -6,8 +6,6 @@ import state from '../state.js'
 import './search-external-results.tag.html'
 
 <search-external>
-	<h4>Søk i eksterne kilder</h4>
-
 	<table>
 		<tbody>
 			<tr>
@@ -69,6 +67,7 @@ import './search-external-results.tag.html'
 			}
 		})
 		tag.events.on('unselected', function() {
+			// TODO delete triples generated from MARC?
 			tag.update({resultSelected: false})
 		})
 
