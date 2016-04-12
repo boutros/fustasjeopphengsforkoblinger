@@ -56,6 +56,9 @@ import './search-external-results.tag.html'
 		// true if any of the search results have been selected
 		tag.resultSelected = false
 
+		// store inserted triples from marc record, in case we want to delete them again
+		tag.insertedTriples = []
+
 
 		tag.events = riot.observable()
 		tag.events.on('selected', function(marc) {
@@ -65,9 +68,12 @@ import './search-external-results.tag.html'
 				// TODO should first delete any triples allready filled out in the form..
 				state.db.insert(triple)
 			}
+			tag.insertedTriples = g.triples()
 		})
 		tag.events.on('unselected', function() {
-			// TODO delete triples generated from MARC?
+			for (let triple of tag.insertedTriples) {
+				state.db.delete(triple)
+			}
 			tag.update({resultSelected: false})
 		})
 
