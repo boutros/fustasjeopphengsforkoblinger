@@ -37,7 +37,7 @@ td,th { padding:0 }
 .menu { position:fixed; top:0; left:0; width: 220px; overflow:hidden; background-color:#fff; height:100%;
       text-align:right; padding: 0 1em;}
 .menu ul li { margin-bottom: 0.5em;}
-.col h4 { margin-top:2em; margin-bottom:10px; border-top:0.5em solid #ccc; }
+.col h3 { margin-top:2em; margin-bottom:10px; border-top:0.5em solid #ccc; }
 
 /* todo maybe remove from here */
 /* styles */
@@ -46,14 +46,16 @@ p { line-height: 1.5em; margin-top: 1.5em; margin-bottom: 0; }
 ul { list-style-type: none; padding:0; }
 ul li { line-height: 1.5em; margin-bottom: 0.5em; }
 input[type="checkbox"], label { cursor: pointer; }
+input[type="radio"], input[type="checkbox"] { margin-right:0.5em }
+button[disabled] { color: #aaa; }
 label { font-weight: bold; }
-
 .hidden { display: none }
 .relative { position: relative; }
 .small-caps { font-variant: small-caps; }
 .clickable { cursor: pointer; }
 
 .workflow-links li { display: inline-block; float: left; width: 25%; font-size: 1.2em;}
+
 
 
 /* animations */
@@ -105,6 +107,7 @@ table td { padding-right: 1em; }
   border-bottom: 0 solid #666;
   overflow: hidden;
   transition: 200ms ease;
+  cursor: pointer;
 }
 
 .caret.open { transform: rotate(-90deg); } /* TODO rename flip or openright */
