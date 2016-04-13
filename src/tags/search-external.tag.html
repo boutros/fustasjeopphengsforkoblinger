@@ -2,6 +2,7 @@ import { debounce } from '../common.js'
 import { status, json, queryParams } from '../http-helpers.js'
 import { marc2rdf } from '../marc.js'
 import state from '../state.js'
+import suggestionmixin from '../suggestionmixin.js'
 
 import './search-external-results.tag.html'
 
@@ -59,16 +60,28 @@ import './search-external-results.tag.html'
 		// store inserted triples from marc record, in case we want to delete them again
 		tag.insertedTriples = []
 
+		tag.mixin(suggestionmixin)
+
 
 		tag.events = riot.observable()
-		tag.events.on('selected', function(marc) {
+		tag.events.on('selected', function(marc, base) {
 			tag.update({resultSelected: true})
-			let g = marc2rdf(marc, state.centerNode, state.ns)
-			for (let triple of g.triples()) {
+			let {graph, suggestions} = marc2rdf(marc, state.centerNode, state.ns)
+			for (let triple of graph.triples()) {
 				// TODO should first delete any triples allready filled out in the form..
 				state.db.insert(triple)
 			}
-			tag.insertedTriples = g.triples()
+			tag.insertedTriples = graph.triples()
+			for (let s of suggestions) {
+				switch (base) {
+					case 'bibbi':
+						s.source = 'BS'
+						break
+					default:
+						s.source = base.toUpperCase()
+				}
+				tag.searchSuggestionEvents.trigger('suggestion', s)
+			}
 		})
 		tag.events.on('unselected', function() {
 			for (let triple of tag.insertedTriples) {

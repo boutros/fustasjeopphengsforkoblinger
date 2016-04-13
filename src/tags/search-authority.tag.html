@@ -1,8 +1,14 @@
 import { debounce} from '../common.js'
 import { status, json, queryParams } from '../http-helpers.js'
+import suggestionmixin from '../suggestionmixin.js'
 
 <search-authority class="relative" type={ opts.type }>
-	<input class="search" oninput={ doSearch } type="search"/>
+	<ul class="suggestions">
+		<li each={ suggestions } onclick={ chooseSuggestion }>
+			<small>{ label }<span>{ source }</span></small>
+		</li>
+	</ul>
+	<input name="searchFor" class="search" oninput={ doSearch } type="search"/>
 	<div if={ query !== "" } class={ caret: true, open: gotResults }></div>
 
 	<style scoped>
@@ -17,7 +23,17 @@ import { status, json, queryParams } from '../http-helpers.js'
 		tag.query = ""
 		tag.gotResults = false
 		tag.searching = false
+		tag.suggestions = []
 		tag.results = []
+
+		tag.mixin(suggestionmixin)
+
+		tag.searchSuggestionEvents.on('suggestion', function(s) {
+			if (s.type = "MainEntry") {
+				tag.suggestions.push(s)
+				tag.update()
+			}
+		})
 
 		let debouncedSearch = debounce(
 			function(query) {
@@ -44,6 +60,11 @@ import { status, json, queryParams } from '../http-helpers.js'
 				return
 			}
 			debouncedSearch(query)
+		}
+
+		tag.chooseSuggestion = function(event) {
+			tag.searchFor.value = event.item.label
+			debouncedSearch(event.item.label)
 		}
 	</script>
 </search-authority>
