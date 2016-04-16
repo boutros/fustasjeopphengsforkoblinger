@@ -25,6 +25,9 @@
 			</div>
 		</div>
 		<p if={ opts.results.length == 0 }><em>Ingen treff</em></p>
+		<div class="create">
+			<button>opprett ny person</button>
+		</div>
 	</div>
 
 	<style scoped>
@@ -37,6 +40,7 @@
 		.caret { position: absolute; top: 1em; right: 1em;}
 		.choose-work { position: absolute; top: 0.5em; right: 1em; }
 		li { border-bottom: 2px solid #444; cursor: pointer;}
+		.create { padding: 0.5em; text-align: center; }
 	</style>
 
 	<script>

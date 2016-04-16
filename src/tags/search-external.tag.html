@@ -75,10 +75,10 @@ import './search-external-results.tag.html'
 			for (let s of suggestions) {
 				switch (base) {
 					case 'bibbi':
-						s.source = 'BS'
+						s.source = 'bs'
 						break
 					default:
-						s.source = base.toUpperCase()
+						s.source = base
 				}
 				tag.searchSuggestionEvents.trigger('suggestion', s)
 			}

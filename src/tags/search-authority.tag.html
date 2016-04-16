@@ -3,13 +3,13 @@ import { status, json, queryParams } from '../http-helpers.js'
 import suggestionmixin from '../suggestionmixin.js'
 
 <search-authority class="relative" type={ opts.type }>
+	<input name="searchFor" class="search" oninput={ doSearch } type="search"/>
+	<div if={ query !== "" } class={ caret: true, open: gotResults }></div>
 	<ul class="suggestions">
 		<li each={ suggestions } onclick={ chooseSuggestion }>
 			<small>{ label }<span>{ source }</span></small>
 		</li>
 	</ul>
-	<input name="searchFor" class="search" oninput={ doSearch } type="search"/>
-	<div if={ query !== "" } class={ caret: true, open: gotResults }></div>
 
 	<style scoped>
 		input { width: 95%;  }

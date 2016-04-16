@@ -58,7 +58,7 @@ label { font-weight: bold; }
 
 .suggestions li { display: inline-block; floag:left; background-color:#ced;
                   margin-right: 0.4em; padding: 0.2em; cursor:pointer;}
-.suggestions span { padding:0.2em; margin:0.3em; background-color: #acd }
+.suggestions span { padding:0.2em; margin:0.3em; background-color: #acd; font-variant: small-caps }
 /* animations */
 
 @keyframes blink {
@@ -94,7 +94,7 @@ table td { padding-right: 1em; }
 
 .support-panel { box-sizing: border-box; background: #ced;
 	             position: absolute; top:1.4em; right: -30rem; width: 28rem;
-	             max-height: 20rem; overflow-y: auto;}
+	             max-height: 20rem; overflow-y: auto; }
 
 .caret {
   display: inline-block;
