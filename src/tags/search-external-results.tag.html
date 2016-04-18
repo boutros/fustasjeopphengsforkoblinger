@@ -1,7 +1,10 @@
 import './marc-preview.tag.html'
+import { marc2rdf } from '../marc.js'
+import state from '../state.js'
+import suggestionmixin from '../suggestionmixin.js'
 
 <search-external-results>
-	<table class="relative" each={ name, base in opts.results }>
+	<table class="relative" each={ name, base in results }>
 		<thead if={ base.records || base.searching }>
 			<tr><th colspan="3">{ labelFor(name) }</th></tr>
 			<tr if={ base.searching }>
@@ -31,7 +34,7 @@ import './marc-preview.tag.html'
 	<style scoped>
 		input, label { cursor: pointer; }
 		label { font-weight: normal; }
-		table { width: 100%; margin-bottom: 1em;}
+		table { width: 100%; margin-bottom: 1em; font-size: 90%;}
 		tbody tr { border-bottom: 1px solid #ddd; }
 		td { vertical-align: top; }
 		tbody tr:hover { background: #eee; }
@@ -41,7 +44,24 @@ import './marc-preview.tag.html'
 
 	<script>
 		const tag = this
-		const parent = tag.parent
+
+		tag.mixin(suggestionmixin)
+
+		let initialResults = {
+			bibbi: {
+				searching: false,
+				previews: undefined,
+				records: undefined
+			},
+			loc: {
+				searching: false,
+				previews: undefined,
+				records: undefined
+			}
+		}
+
+		tag.results = initialResults
+
 		tag.anySelected = false
 		tag.selected = {
 			base: undefined,
@@ -63,15 +83,46 @@ import './marc-preview.tag.html'
 			}
 		}
 
-		parent.events.on('got-results', function() {
+		// store inserted triples from marc record, in case we want to delete them again
+		tag.insertedTriples = []
+
+		tag.opts.events.on('is-searching', function(base) {
+			tag.results[base].searching = true
+			tag.update()
+		})
+
+		tag.opts.events.on('done-searching', function(res) {
 			// clear any selected item or marc preview
-			tag.selected = {
-				base: undefined,
-				i: undefined
+			tag.selected = { base: undefined, i: undefined }
+			tag.previewingMarc = { base: undefined, i: undefined }
+
+			tag.results[res.base].searching = false
+			tag.results[res.base].previews = res.previews
+			tag.results[res.base].records = res.records
+			tag.update()
+		})
+
+		tag.opts.events.on('selected', function(marc, base) {
+			let {graph, suggestions} = marc2rdf(marc, state.centerNode, state.ns)
+			for (let triple of graph.triples()) {
+				// TODO should first delete any triples allready filled out in the form..
+				state.db.insert(triple)
 			}
-			tag.previewingMarc = {
-				base: undefined,
-				i: undefined
+			tag.insertedTriples = graph.triples()
+			for (let s of suggestions) {
+				switch (base) {
+					case 'bibbi':
+						s.source = 'bs'
+						break
+					default:
+						s.source = base
+				}
+				tag.searchSuggestionEvents.trigger('suggestion', s)
+			}
+		})
+		tag.opts.events.on('unselected', function() {
+			for (let triple of tag.insertedTriples) {
+				state.db.delete(triple)
 			}
 		})
 
@@ -95,7 +146,7 @@ import './marc-preview.tag.html'
 					tag.root.getElementsByClassName(base)[tag.selected.i].checked = false
 					tag.selected.base = undefined
 					tag.selected.i = undefined
-					parent.events.trigger('unselected')
+					tag.opts.events.trigger('unselected')
 				} else {
 					if (tag.selected.i) {
 						tag.root.getElementsByClassName(base)[tag.selected.i].checked = false
@@ -103,7 +154,7 @@ import './marc-preview.tag.html'
 					tag.selected.base = base
 					tag.selected.i = event.item.i
 					tag.root.getElementsByClassName(base)[tag.selected.i].checked = true
-					parent.events.trigger('selected', tag.opts.results[base].records[tag.selected.i], base)
+					tag.opts.events.trigger('selected', tag.results[base].records[tag.selected.i], base)
 				}
 
 				// e.preventDefault(), since we manually checked/unchecked the radio buttons

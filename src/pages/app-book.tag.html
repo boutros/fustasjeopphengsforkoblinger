@@ -4,19 +4,34 @@ import '../tags/input-literal.tag.html'
 
 <app-book>
 	<div class="container">
+		<div class="row">
+			<div class="col col-left">
+				<h3>Søk i eksterne kilder</h3>
+				<div class="panel">
+					<search-external events={ eventsExternalSearch }></search-external>
+				</div>
+			</div>
+			<div class="col col-mid">
+				<div class="result-panel" if={ searchResults.external }>
+					&nbsp;
+					<search-external-results events={ eventsExternalSearch }></search-external-results>
+				</div>
+			</div>
+			<div class="col col-right">
+				<!-- marc-preview events={ eventsExternalSearch } ></marc-preview> -->
+			</div>
+		</div>
+		<div class="row">
+			<div class="col col-left">
+				<h3>Hovedinnførsel / verkstilknytning</h3>
+				<div class="panel">
+					<book-main-entry></book-main-entry>
+				</div>
+			</div>
+			<div class="col col-mid"></div>
+			<div class="col col-right"></div>
+		</div>
 		<div class="col">
-			<span>&nbsp;</span>
-
-			<h3>Søk i eksterne kilder</h3>
-			<div class="panel">
-				<search-external></search-external>
-			</div>
-
-			<h3>Hovedinnførsel / verkstilknytning</h3>
-			<div class="panel">
-				<book-main-entry></book-main-entry>
-			</div>
-
 			<h3>Tittelopplysninger</h3>
 			<div class="panel">
 				<p>
@@ -36,14 +51,22 @@ import '../tags/input-literal.tag.html'
 					<input-literal predicate="partNumber"></input-literal>
 				</p>
 			</div>
-
-
 		</div>
 
 	</div>
 
 	<script>
 		const tag = this
+
+		tag.searchResults = {
+			external: false
+		}
+		tag.eventsExternalSearch = riot.observable()
+
+		tag.eventsExternalSearch.on('is-searching', function() {
+			tag.searchResults.external = true
+			tag.update()
+		})
 
 	</script>
 </app-book>

@@ -1,8 +1,5 @@
 import { debounce } from '../common.js'
 import { status, json, queryParams } from '../http-helpers.js'
-import { marc2rdf } from '../marc.js'
-import state from '../state.js'
-import suggestionmixin from '../suggestionmixin.js'
 
 import './search-external-results.tag.html'
 
@@ -22,16 +19,14 @@ import './search-external-results.tag.html'
 	</table>
 
 	<div>
-		<button name="bibbi" disabled={ resultSelected || results.bibbi.searching } onclick={ search }>Biblioteksentralen</button>
-		<button name="loc" disabled={ resultSelected || results.loc.searching } onclick={ search }>Library Of Congress</button>
+		<button name="bibbi" disabled={ searching.bibbi } onclick={ search }>Biblioteksentralen</button>
+		<button name="loc" disabled={ searching.loc } onclick={ search }>Library Of Congress</button>
 		<br/>
 	</div>
 
-	<search-external-results results={ this.results }></search-external-results>
-
 	<style scoped>
 		table { width: 100%; }
-		input[type="search"] { width: 7.5em; }
+		input[type="search"] { width: 7em; }
 		button { margin: 1em 1em 1em 0; padding: 0.5em; }
 	</style>
 
@@ -39,56 +34,10 @@ import './search-external-results.tag.html'
 		const tag = this
 		const debounceMs = 400
 
-		let initialResults = {
-			bibbi: {
-				searching: false,
-				preview: undefined,
-				records: undefined
-			},
-			loc: {
-				searching: false,
-				preview: undefined,
-				records: undefined
-			}
+		tag.searching = {
+			bibbi: false,
+			loc: false
 		}
-
-		tag.results = initialResults
-
-		// true if any of the search results have been selected
-		tag.resultSelected = false
-
-		// store inserted triples from marc record, in case we want to delete them again
-		tag.insertedTriples = []
-
-		tag.mixin(suggestionmixin)
-
-
-		tag.events = riot.observable()
-		tag.events.on('selected', function(marc, base) {
-			tag.update({resultSelected: true})
-			let {graph, suggestions} = marc2rdf(marc, state.centerNode, state.ns)
-			for (let triple of graph.triples()) {
-				// TODO should first delete any triples allready filled out in the form..
-				state.db.insert(triple)
-			}
-			tag.insertedTriples = graph.triples()
-			for (let s of suggestions) {
-				switch (base) {
-					case 'bibbi':
-						s.source = 'bs'
-						break
-					default:
-						s.source = base
-				}
-				tag.searchSuggestionEvents.trigger('suggestion', s)
-			}
-		})
-		tag.events.on('unselected', function() {
-			for (let triple of tag.insertedTriples) {
-				state.db.delete(triple)
-			}
-			tag.update({resultSelected: false})
-		})
 
 		let debounceSearch = debounce(function(base, isbn, author, title) {
 			if (isbn === "" && author === "" && title === "") {
@@ -107,20 +56,21 @@ import './search-external-results.tag.html'
 				params.isbn = isbn
 			}
 
-			tag.results[base].searching = true
-			tag.results[base].previews = undefined
-			tag.results[base].records = undefined
+			tag.searching[base] = true
 			tag.update()
+			tag.opts.events.trigger('is-searching', base)
 
 			fetch('/search/z3950'+queryParams(params))
 				.then(status)
 				.then(json)
 				.then(function(data) {
-					tag.events.trigger('got-results')
-					tag.results[base].previews = data.previews
-					tag.results[base].records = data.marc
-					tag.results[base].searching = false
+					tag.searching[base] = false
 					tag.update()
+					tag.opts.events.trigger('done-searching', {
+						base: base,
+						previews: data.previews,
+						records: data.marc
+					})
 				})
 				.catch(function (error) {
 					console.log('request failed', error)
